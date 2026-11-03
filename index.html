@@ -1,0 +1,1401 @@
+<!DOCTYPE html>
+<html lang="km" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>MY SECOND BRAIN V4.2 PRO - Personal Finance</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Kantumruy+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        finance: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            200: '#bbf7d0',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            800: '#166534',
+                            900: '#14532d',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['"Kantumruy Pro"', 'Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Kantumruy Pro', 'Inter', sans-serif; }
+        /* Keep expense total readable but not oversized. */
+        #expenseOverviewTotal { font-size: 20px !important; line-height: 1.25 !important; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        /* Responsive layout: desktop remains unchanged; phone layout uses one clear column. */
+        *, *::before, *::after { box-sizing: border-box; }
+        html, body { width: 100%; max-width: 100%; overflow-x: hidden; }
+        img, input, select, textarea, button { max-width: 100%; }
+        input, select, textarea, button { font-family: inherit; }
+        @media (max-width: 640px) {
+            body { min-height: 100dvh; font-size: 14px; }
+            header { position: sticky; top: 0; }
+            header > div { padding: 10px 12px !important; gap: 10px !important; }
+            header > div > div:first-child { min-width: 0; }
+            header h1 { font-size: 15px !important; }
+            header p { font-size: 10px !important; }
+            header > div > div:last-child { width: 100%; display: grid !important; grid-template-columns: minmax(0,1fr) auto auto; }
+            header select { max-width: 100%; min-width: 0; }
+            main { padding: 12px !important; gap: 14px !important; }
+            main > section { padding: 14px !important; }
+            main > section > div { gap: 12px !important; }
+            #expenseOverviewTotal { font-size: 18px !important; line-height: 1.25 !important; }
+            #expenseOverviewCash, #expenseOverviewAba, #expenseOverviewPersonal { overflow-wrap: anywhere; }
+            #tabContentTransactions > div, #tabContentHistory > div, #tabContentReports > div { min-width: 0; }
+            main > div.bg-white.p-4.rounded-2xl { padding: 12px !important; }
+            main > div.bg-white.p-4.rounded-2xl > div:first-child { width: 100%; }
+            main > div.bg-white.p-4.rounded-2xl > div:first-child button { flex: 0 0 auto; white-space: nowrap; }
+            main > div.bg-white.p-4.rounded-2xl > div:last-child { display: grid !important; grid-template-columns: 1fr 1fr; width: 100%; }
+            #addIncomeBtn, #addExpenseBtn { justify-content: center; min-height: 44px; padding: 10px 8px !important; font-size: 12px !important; }
+            .overflow-x-auto { max-width: 100%; -webkit-overflow-scrolling: touch; }
+            table { min-width: 720px; }
+            #txModal, #detailModal, #newMonthModal { align-items: flex-end !important; padding: 0 !important; }
+            #txModal > div, #detailModal > div, #newMonthModal > div {
+                width: 100% !important; max-width: none !important; max-height: 92dvh !important;
+                overflow-y: auto; border-radius: 22px 22px 0 0 !important;
+                padding: 18px 14px calc(18px + env(safe-area-inset-bottom)) !important;
+            }
+            #txForm .grid.grid-cols-2 { grid-template-columns: minmax(0,1fr) !important; }
+            #txForm input, #txForm select, #txForm textarea { min-height: 44px; font-size: 16px !important; }
+            #formAmount { font-size: 18px !important; min-height: 48px !important; }
+            #txForm button[type="submit"], #txForm button[type="button"] { min-height: 44px; font-size: 14px !important; }
+            #txForm > div:last-child { display: grid !important; grid-template-columns: 1fr 1.4fr; }
+            #txForm input[type="file"] { font-size: 12px !important; min-height: auto; width: 100%; }
+            #detailModal .flex.flex-wrap.justify-end { display: grid !important; grid-template-columns: 1fr 1fr; }
+            #detailModal .flex.flex-wrap.justify-end button { justify-content: center; min-height: 42px; }
+            #detailModal .flex.flex-wrap.justify-end button:nth-child(2) { grid-column: 1 / -1; }
+            .grid { min-width: 0; }
+            p, h1, h2, h3, label, span { overflow-wrap: anywhere; }
+        }
+        @media (max-width: 380px) {
+            main { padding: 9px !important; }
+            header > div { padding-left: 9px !important; padding-right: 9px !important; }
+            main > div.bg-white.p-4.rounded-2xl > div:first-child button { padding-left: 10px !important; padding-right: 10px !important; font-size: 11px !important; }
+            #addIncomeBtn, #addExpenseBtn { font-size: 11px !important; }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 h-full flex flex-col antialiased selection:bg-finance-500 selection:text-white">
+
+    <!-- Header -->
+    <header class="bg-white border-b border-gray-200 sticky top-0 z-30 shadow-xs">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap justify-between items-center gap-3">
+            <div class="flex items-center space-x-3 rtl:space-x-reverse">
+                <div class="w-10 h-10 rounded-xl bg-finance-600 flex items-center justify-center text-white shadow-md shadow-finance-600/20">
+                    <i class="fa-solid fa-wallet text-lg"></i>
+                </div>
+                <div>
+                    <h1 class="font-bold text-gray-900 text-base md:text-lg tracking-tight">MY SECOND BRAIN</h1>
+                    <p class="text-xs text-finance-700 font-medium tracking-wide uppercase" data-i18n="subtitle">Personal Finance V4.2 PRO</p>
+                </div>
+            </div>
+
+            <!-- Month Selector & Actions -->
+            <div class="flex items-center flex-wrap gap-2">
+                <div class="flex items-center bg-gray-100 rounded-xl px-3 py-1.5 border border-gray-200">
+                    <i class="fa-regular fa-calendar text-finance-600 mr-2 rtl:mr-0 rtl:ml-2"></i>
+                    <select id="activeMonthSelect" onchange="changeActiveMonth(this.value)" class="bg-transparent text-sm font-semibold text-gray-700 focus:outline-none cursor-pointer">
+                        <!-- Populated dynamically -->
+                    </select>
+                </div>
+                <button onclick="openNewMonthModal()" class="bg-finance-50 hover:bg-finance-100 text-finance-700 border border-finance-200 text-xs font-semibold px-3 py-2 rounded-xl transition flex items-center gap-1.5 shadow-xs">
+                    <i class="fa-solid fa-plus"></i> <span data-i18n="newMonthBtn">បើកខែថ្មី</span>
+                </button>
+                <button onclick="toggleLanguage()" class="bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-bold px-3 py-2 rounded-xl transition flex items-center gap-1">
+                    <i class="fa-solid fa-globe text-finance-600"></i> <span id="langLabel">EN</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="flex-1 max-w-7xl w-full mx-auto p-4 md:p-6 space-y-6 overflow-y-auto">
+
+        <!-- Status Banner / Closed Month Notice -->
+        <div id="closedMonthBanner" class="hidden bg-amber-50 border border-amber-200 text-amber-800 px-4 py-3 rounded-2xl flex items-center justify-between shadow-xs">
+            <div class="flex items-center gap-3">
+                <i class="fa-solid fa-lock text-amber-600 text-lg"></i>
+                <div>
+                    <p class="font-bold text-sm" data-i18n="closedMonthNoticeTitle">ខែនេះត្រូវបានបិទបញ្ជីរួចរាល់ (Closed Month)</p>
+                    <p class="text-xs text-amber-700" data-i18n="closedMonthNoticeDesc">ទិន្នន័យត្រូវបានរក្សាទុកជាប្រវត្តិសាស្ត្រ មិនអាចកែប្រែឬបន្ថែមថ្មីបានទេ លុះត្រាតែបើកឡើងវិញ។</p>
+                </div>
+            </div>
+            <button onclick="unlockCurrentMonth()" class="text-xs bg-amber-200 hover:bg-amber-300 text-amber-900 font-bold px-3 py-1.5 rounded-lg transition" data-i18n="unlockBtn">ដោះសោខែ</button>
+        </div>
+
+        <!-- Summary Cards Grid (Unified USD 4000 Rate) -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <!-- USD Summary -->
+            <div class="bg-white rounded-2xl p-5 border border-gray-100 shadow-xs hover:shadow-md transition">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider" data-i18n="usdBalance">ប្រាក់សល់ USD / KHR</p>
+                        <h3 id="summaryUsdBalance" class="text-xl font-bold text-gray-900 mt-1">$0.00</h3>
+                    </div>
+                    <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold">
+                        $
+                    </div>
+                </div>
+                <div class="mt-4 pt-3 border-t border-gray-100 flex justify-between text-xs text-gray-500">
+                    <span><strong data-i18n="in">ទទួលបាន:</strong> <span id="summaryUsdIn">$0.00</span></span>
+                    <span><strong data-i18n="out">ចំណាយ:</strong> <span id="summaryUsdOut">$0.00</span></span>
+                </div>
+            </div>
+
+            <!-- Unified Total in USD (Rate 4,000) -->
+            <div class="bg-white rounded-2xl p-5 border border-gray-100 shadow-xs hover:shadow-md transition">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider" data-i18n="unifiedUsdTotal">សរុបរួមជា USD (អត្រា 4,000)</p>
+                        <h3 id="summaryUnifiedUsd" class="text-2xl font-bold text-finance-700 mt-1">$0.00</h3>
+                    </div>
+                    <div class="w-10 h-10 rounded-xl bg-green-50 text-green-700 flex items-center justify-center font-bold">
+                        <i class="fa-solid fa-scale-balanced"></i>
+                    </div>
+                </div>
+                <div class="mt-4 pt-3 border-t border-gray-100 flex justify-between text-xs text-gray-500">
+                    <span data-i18n="rateNote">1 USD = 4,000 KHR គណនាតែមួយ</span>
+                </div>
+            </div>
+
+            <!-- Cash vs ABA -->
+            <div class="bg-white rounded-2xl p-5 border border-gray-100 shadow-xs hover:shadow-md transition">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider" data-i18n="paymentBreakdown">បែងចែកសាច់ប្រាក់ & ABA</p>
+                        <div class="mt-1 space-y-0.5">
+                            <p class="text-sm font-bold text-gray-800"><span class="text-gray-400 text-xs font-normal">Cash:</span> <span id="summaryCashTotal">$0.00</span></p>
+                            <p class="text-sm font-bold text-gray-800"><span class="text-gray-400 text-xs font-normal">ABA Statement:</span> <span id="summaryAbaTotal">$0.00</span></p>
+                        </div>
+                    </div>
+                    <div class="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
+                        <i class="fa-solid fa-credit-card"></i>
+                    </div>
+                </div>
+                <div class="mt-4 pt-3 border-t border-gray-100 flex justify-between text-xs text-gray-500">
+                    <span data-i18n="cashAndAbaTracking">តាមដានគណនីច្បាស់លាស់</span>
+                </div>
+            </div>
+
+            <!-- Personal Out-of-Pocket -->
+            <div class="bg-white rounded-2xl p-5 border border-gray-100 shadow-xs hover:shadow-md transition">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider" data-i18n="personalAdvanced">ប្រាក់ផ្ទាល់ខ្លួនចេញជំនួស</p>
+                        <h3 id="summaryPersonalTotal" class="text-2xl font-bold text-amber-600 mt-1">$0.00</h3>
+                    </div>
+                    <div class="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center">
+                        <i class="fa-solid fa-hand-holding-dollar"></i>
+                    </div>
+                </div>
+                <div class="mt-4 pt-3 border-t border-gray-100 flex justify-between text-xs text-gray-500">
+                    <span data-i18n="advanceNote">ទឹកប្រាក់សងវិញ / ចេញមុន</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Clear Expense / Withdrawal Overview -->
+        <section class="bg-gradient-to-r from-rose-50 to-white border border-rose-200 rounded-2xl p-4 md:p-5 shadow-xs" aria-label="Expense overview">
+            <div class="flex flex-wrap items-center justify-between gap-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-11 h-11 rounded-xl bg-rose-100 text-rose-700 flex items-center justify-center">
+                        <i class="fa-solid fa-arrow-up-from-bracket text-lg"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs font-bold text-rose-700 uppercase tracking-wide">ប្រាក់ដកចេញ / ចំណាយសរុបក្នុងខែនេះ</p>
+                        <h2 id="expenseOverviewTotal" class="text-2xl md:text-3xl font-extrabold text-rose-700 mt-0.5">$0.00</h2>
+                        <p class="text-xs text-gray-500 mt-1">ចំនួនប្រតិបត្តិការ៖ <strong id="expenseOverviewCount">0</strong> ដង</p>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 text-sm min-w-[220px]">
+                    <div class="bg-white border border-gray-100 rounded-xl px-3 py-2">
+                        <p class="text-xs text-gray-500">ដកជាសាច់ប្រាក់</p>
+                        <p id="expenseOverviewCash" class="font-bold text-gray-800">$0.00</p>
+                    </div>
+                    <div class="bg-white border border-gray-100 rounded-xl px-3 py-2">
+                        <p class="text-xs text-gray-500">ចេញតាម ABA</p>
+                        <p id="expenseOverviewAba" class="font-bold text-gray-800">$0.00</p>
+                    </div>
+                    <div class="bg-white border border-gray-100 rounded-xl px-3 py-2 col-span-2 sm:col-span-1">
+                        <p class="text-xs text-gray-500">ប្រាក់ផ្ទាល់ខ្លួនចេញជំនួស</p>
+                        <p id="expenseOverviewPersonal" class="font-bold text-gray-800">$0.00</p>
+                    </div>
+                </div>
+                <button type="button" onclick="showExpenseOnly()" class="bg-rose-600 hover:bg-rose-700 text-white text-sm font-bold px-4 py-2.5 rounded-xl transition shadow-sm">
+                    <i class="fa-solid fa-list-ul mr-1"></i> មើលតែបញ្ជីចំណាយ
+                </button>
+            </div>
+        </section>
+
+        <!-- Action Bar & Tabs -->
+        <div class="flex flex-wrap items-center justify-between gap-3 bg-white p-4 rounded-2xl border border-gray-100 shadow-xs">
+            <div class="flex items-center gap-2 overflow-x-auto no-scrollbar">
+                <button onclick="switchTab('transactions')" id="tabBtnTx" class="px-4 py-2 rounded-xl text-sm font-bold transition bg-finance-600 text-white shadow-sm flex items-center gap-2">
+                    <i class="fa-solid fa-list-check"></i> <span data-i18n="tabTx">បញ្ជីចំណាយ & ថវិកា</span>
+                </button>
+                <button onclick="switchTab('history')" id="tabBtnHistory" class="px-4 py-2 rounded-xl text-sm font-semibold transition bg-gray-100 text-gray-600 hover:bg-gray-200 flex items-center gap-2">
+                    <i class="fa-solid fa-clock-rotate-left"></i> <span data-i18n="tabHistory">ប្រវត្តិប្រចាំខែ & បិទបញ្ជី</span>
+                </button>
+                <button onclick="switchTab('reports')" id="tabBtnReports" class="px-4 py-2 rounded-xl text-sm font-semibold transition bg-gray-100 text-gray-600 hover:bg-gray-200 flex items-center gap-2">
+                    <i class="fa-solid fa-chart-pie"></i> <span data-i18n="tabReports">របាយការណ៍ & Backup</span>
+                </button>
+            </div>
+
+            <div class="flex items-center gap-2">
+                <button id="addIncomeBtn" onclick="openModal('income')" class="bg-finance-600 hover:bg-finance-700 text-white text-xs md:text-sm font-bold px-4 py-2.5 rounded-xl transition shadow-sm flex items-center gap-2">
+                    <i class="fa-solid fa-plus-circle"></i> <span data-i18n="addIncome">កត់ត្រាថវិកាទទួលបាន</span>
+                </button>
+                <button id="addExpenseBtn" onclick="openModal('expense')" class="bg-gray-900 hover:bg-gray-800 text-white text-xs md:text-sm font-bold px-4 py-2.5 rounded-xl transition shadow-sm flex items-center gap-2">
+                    <i class="fa-solid fa-minus-circle"></i> <span data-i18n="addExpense">កត់ត្រាចំណាយ</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Tab 1: Transactions & Active Month Data -->
+        <div id="tabContentTransactions" class="space-y-4">
+            <div class="bg-white rounded-2xl border border-gray-100 shadow-xs overflow-hidden">
+                <div class="p-4 border-b border-gray-100 flex flex-wrap justify-between items-center gap-3">
+                    <div class="flex items-center gap-2">
+                        <h2 class="font-bold text-gray-900 text-base" data-i18n="currentMonthRecords">បញ្ជីប្រតិបត្តិការខែបច្ចុប្បន្ន</h2>
+                        <span id="activeMonthBadge" class="bg-finance-50 text-finance-700 text-xs font-bold px-2.5 py-1 rounded-full border border-finance-200"></span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <input type="text" id="searchInput" oninput="renderTransactions()" placeholder="ស្វែងរកឈ្មោះហាង លេខទូរស័ព្ទ កាលបរិច្ឆេទ ឬចំនួនប្រាក់..." class="bg-gray-50 border border-gray-200 text-xs rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-finance-500 w-48">
+                        <select id="filterType" onchange="renderTransactions()" class="bg-gray-50 border border-gray-200 text-xs rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-finance-500">
+                            <option value="all" data-i18n="filterAll">ទាំងអស់</option>
+                            <option value="income" data-i18n="filterIncome">ថវិកាទទួលបាន</option>
+                            <option value="expense" data-i18n="filterExpense">ចំណាយ</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-gray-50/70 border-b border-gray-100 text-xs font-bold text-gray-500 uppercase tracking-wider">
+                                <th class="p-3.5 pl-4" data-i18n="thDate">កាលបរិច្ឆេទ</th>
+                                <th class="p-3.5" data-i18n="thType">ប្រភេទ</th>
+                                <th class="p-3.5" data-i18n="thCategory">ចំណាត់ថ្នាក់ / ពិពណ៌នា</th>
+                                <th class="p-3.5" data-i18n="thAmount">ទឹកប្រាក់ (ដើម)</th>
+                                <th class="p-3.5" data-i18n="thConverted">កាត់ជា USD ($4,000)</th>
+                                <th class="p-3.5" data-i18n="thMethod">ទូទាត់/ប្រភព</th>
+                                <th class="p-3.5" data-i18n="thProofs">Bank Statement / វិក្កយបត្រ</th>
+                                <th class="p-3.5 pr-4 text-right" data-i18n="thAction">សកម្មភាព</th>
+                            </tr>
+                        </thead>
+                        <tbody id="transactionsTableBody" class="divide-y divide-gray-100 text-sm">
+                            <!-- Populated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+                <div id="noTransactions" class="hidden py-12 text-center text-gray-400 text-sm">
+                    <i class="fa-regular fa-folder-open text-3xl mb-2"></i>
+                    <p data-i18n="noData">មិនទាន់មានទិន្នន័យក្នុងខែនេះនៅឡើយទេ</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 2: Monthly History & Closing -->
+        <div id="tabContentHistory" class="hidden space-y-6">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Month List & Closing Control -->
+                <div class="bg-white rounded-2xl border border-gray-100 p-5 shadow-xs space-y-4">
+                    <div class="flex justify-between items-center">
+                        <h2 class="font-bold text-gray-900 text-base" data-i18n="monthlyHistoryList">ប្រវត្តិខែទាំងអស់</h2>
+                        <button onclick="openNewMonthModal()" class="text-xs bg-finance-50 text-finance-700 font-bold px-3 py-1.5 rounded-lg border border-finance-200 hover:bg-finance-100 transition" data-i18n="newMonthBtn">បង្កើតខែថ្មី</button>
+                    </div>
+                    <p class="text-xs text-gray-500" data-i18n="historyDesc">ជ្រើសរើសខែដើម្បីមើលទិន្នន័យចាស់ បិទបញ្ជីខែ ឬទាញយក CSV ប្រចាំខែ។</p>
+                    
+                    <div id="monthsHistoryContainer" class="space-y-2.5 max-h-[400px] overflow-y-auto pr-1">
+                        <!-- Populated dynamically -->
+                    </div>
+                </div>
+
+                <!-- Selected Month Details & Management -->
+                <div class="lg:col-span-2 bg-white rounded-2xl border border-gray-100 p-5 shadow-xs space-y-4">
+                    <div class="flex flex-wrap justify-between items-center gap-3 pb-3 border-b border-gray-100">
+                        <div>
+                            <h3 id="historyDetailTitle" class="font-bold text-gray-900 text-lg">ព័ត៌មានលម្អិតខែ: --</h3>
+                            <p id="historyDetailSubtitle" class="text-xs text-gray-500">ស្ថានភាព: សកម្ម</p>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button id="closeMonthBtn" onclick="toggleCloseMonth()" class="bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold px-3 py-2 rounded-xl transition shadow-xs flex items-center gap-1.5">
+                                <i class="fa-solid fa-lock"></i> <span id="closeMonthBtnText" data-i18n="closeMonthBtn">បិទបញ្ជីខែនេះ</span>
+                            </button>
+                            <button onclick="exportMonthCsv(selectedHistoryMonth)" class="bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-bold px-3 py-2 rounded-xl transition flex items-center gap-1.5">
+                                <i class="fa-solid fa-file-csv text-finance-600"></i> <span data-i18n="exportCsvBtn">ទាញយក CSV</span>
+                            </button>
+                            <button onclick="promptDeleteMonth(selectedHistoryMonth)" class="bg-red-50 hover:bg-red-100 text-red-600 text-xs font-bold px-3 py-2 rounded-xl transition flex items-center gap-1.5 border border-red-200">
+                                <i class="fa-solid fa-trash-can"></i> <span data-i18n="deleteMonthBtn">លុបខែនេះ</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 bg-gray-50 p-4 rounded-xl">
+                        <div>
+                            <p class="text-xs text-gray-400" data-i18n="usdBalance">ប្រាក់សល់</p>
+                            <p id="histUsdBal" class="text-base font-bold text-gray-900">$0.00</p>
+                        </div>
+                        <div>
+                            <p class="text-xs text-gray-400" data-i18n="unifiedUsdTotal">សរុប USD ($4,000)</p>
+                            <p id="histUnifiedBal" class="text-base font-bold text-finance-700">$0.00</p>
+                        </div>
+                        <div>
+                            <p class="text-xs text-gray-400" data-i18n="totalTxCount">ចំនួនប្រតិបត្តិការ</p>
+                            <p id="histTxCount" class="text-base font-bold text-gray-900">0</p>
+                        </div>
+                        <div>
+                            <p class="text-xs text-gray-400" data-i18n="status">ស្ថានភាព</p>
+                            <p id="histStatusBadge" class="text-base font-bold text-emerald-600">សកម្ម (Active)</p>
+                        </div>
+                    </div>
+
+                    <div class="overflow-x-auto max-h-[300px]">
+                        <table class="w-full text-left border-collapse text-xs">
+                            <thead>
+                                <tr class="bg-gray-50 border-b border-gray-100 font-bold text-gray-500 uppercase">
+                                    <th class="p-2.5" data-i18n="thDate">កាលបរិច្ឆេទ</th>
+                                    <th class="p-2.5" data-i18n="thType">ប្រភេទ</th>
+                                    <th class="p-2.5" data-i18n="thCategory">ចំណាត់ថ្នាក់</th>
+                                    <th class="p-2.5" data-i18n="thAmount">ទឹកប្រាក់ដើម</th>
+                                    <th class="p-2.5" data-i18n="thConverted">កាត់ជា USD</th>
+                                    <th class="p-2.5" data-i18n="thMethod">ទូទាត់</th>
+                                </tr>
+                            </thead>
+                            <tbody id="historyTableBody" class="divide-y divide-gray-100">
+                                <!-- Populated dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 3: Reports & Backup -->
+        <div id="tabContentReports" class="hidden space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Export & Backup Center -->
+                <div class="bg-white rounded-2xl border border-gray-100 p-5 shadow-xs space-y-4">
+                    <h2 class="font-bold text-gray-900 text-base" data-i18n="backupRestoreTitle">ការបម្រុងទុកទិន្នន័យ (Backup & Restore)</h2>
+                    <p class="text-xs text-gray-500" data-i18n="backupDesc">ទិន្នន័យទាំងអស់ត្រូវបានរក្សាទុកក្នុង Browser របស់អ្នក។ សូមធ្វើការ Backup ជាប្រចាំដើម្បីការពារការបាត់បង់ទិន្នន័យ។</p>
+                    
+                    <div class="flex flex-wrap gap-3 pt-2">
+                        <button onclick="exportFullBackup()" class="bg-finance-600 hover:bg-finance-700 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition shadow-xs flex items-center gap-2">
+                            <i class="fa-solid fa-download"></i> <span data-i18n="backupBtn">ទាញយក Backup (JSON)</span>
+                        </button>
+                        <label class="bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-bold px-4 py-2.5 rounded-xl transition cursor-pointer flex items-center gap-2">
+                            <i class="fa-solid fa-upload text-finance-600"></i> <span data-i18n="restoreBtn">បញ្ចូលទិន្នន័យ (Restore)</span>
+                            <input type="file" id="restoreFile" accept=".json" onchange="importFullBackup(event)" class="hidden">
+                        </label>
+                    </div>
+
+                    <div class="pt-4 border-t border-gray-100 space-y-3">
+                        <h3 class="font-bold text-gray-800 text-sm" data-i18n="exportExcelTitle">ទាញយករបាយការណ៍ផ្សេងៗ</h3>
+                        <div class="flex flex-wrap gap-2">
+                            <button onclick="exportMonthCsv(activeMonth)" class="bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-semibold px-3 py-2 rounded-xl transition flex items-center gap-1.5">
+                                <i class="fa-solid fa-file-csv text-finance-600"></i> <span data-i18n="exportCsvBtn">ទាញយក CSV ខែនេះ</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Info & PWA Guide -->
+                <div class="bg-white rounded-2xl border border-gray-100 p-5 shadow-xs space-y-4">
+                    <h2 class="font-bold text-gray-900 text-base" data-i18n="pwaGuideTitle">ការដំឡើងលើ iPhone & កុំព្យូទ័រ (PWA)</h2>
+                    <ul class="space-y-2 text-xs text-gray-600">
+                        <li class="flex items-start gap-2">
+                            <i class="fa-solid fa-circle-check text-finance-600 mt-0.5"></i>
+                            <span data-i18n="pwaStep1"><strong>នៅលើ iPhone (Safari):</strong> ចុចប៊ូតុង Share ខាងក្រោមអេក្រង់ រួចជ្រើសរើស "Add to Home Screen" ដើម្បីប្រើប្រាស់ដូចកម្មវិធីទូរស័ព្ទធម្មតា[cite: 3]។</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fa-solid fa-circle-check text-finance-600 mt-0.5"></i>
+                            <span data-i18n="pwaStep2"><strong>នៅលើ Windows PC:</strong> អាចបើកតាម Chrome ឬ Edge រួចចុច Install App នៅលើ Address Bar[cite: 3]។</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fa-solid fa-circle-check text-finance-600 mt-0.5"></i>
+                            <span data-i18n="pwaStep3"><strong>សុវត្ថិភាពទិន្នន័យ៖</strong> មិនមានការស្នើសុំ ABA PIN, Password ឬ OTP ណាមួយឡើយ[cite: 3]។</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Modal: Add / Edit Transaction -->
+    <div id="txModal" class="fixed inset-0 bg-black/50 backdrop-blur-xs z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl border border-gray-100 space-y-4 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center pb-3 border-b border-gray-100">
+                <h3 id="modalTitle" class="font-bold text-gray-900 text-lg" data-i18n="addTxTitle">កត់ត្រាប្រតិបត្តិការថ្មី</h3>
+                <button onclick="closeModal()" class="w-8 h-8 rounded-full bg-gray-100 text-gray-500 hover:bg-gray-200 flex items-center justify-center transition">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div id="expenseFormHint" class="rounded-xl border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-800">សូមបញ្ចូលចំនួនប្រាក់ និងជ្រើសរើសប្រភពប្រាក់ដែលបានចំណាយ។ វិក្កយបត្រ និងបង្កាន់ដៃ ABA អាចភ្ជាប់ ឬរំលងបាន។</div>
+            <form id="txForm" onsubmit="saveTransaction(event)" class="space-y-4">
+                <input type="hidden" id="txId">
+                
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-sm font-bold text-gray-800 mb-1">ប្រភេទប្រតិបត្តិការ</label>
+                        <select id="formType" onchange="onFormTypeChange()" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-finance-500 font-medium">
+                            <option value="expense" data-i18n="filterExpense">ចំណាយ</option>
+                            <option value="income" data-i18n="filterIncome">ថវិកាទទួលបាន</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold text-gray-800 mb-1">កាលបរិច្ឆេទ</label>
+                        <input type="date" id="formDate" required class="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-finance-500">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-sm font-bold text-gray-800 mb-1">ចំនួនទឹកប្រាក់</label>
+                        <input type="number" step="any" id="formAmount" required min="0.01" placeholder="បញ្ចូលចំនួនប្រាក់" class="w-full bg-emerald-50 border-2 border-emerald-200 rounded-xl px-4 py-3 text-xl focus:outline-none focus:ring-2 focus:ring-finance-500 font-bold">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold text-gray-800 mb-1">រូបិយប័ណ្ណ</label>
+                        <select id="formCurrency" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-finance-500 font-bold">
+                            <option value="USD">ដុល្លារ ($)</option>
+                            <option value="KHR">រៀល (៛)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div id="expenseFieldsGroup" class="space-y-4">
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-sm font-bold text-gray-800 mb-1">ប្រភេទចំណាយ</label>
+                            <select id="formCategory" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-finance-500">
+                                <option value="ម្ហូបអាហារ & ភេសជ្ជៈ">ម្ហូបអាហារ & ភេសជ្ជៈ (Food & Drink)</option>
+                                <option value="ស្នាក់នៅ (សណ្ឋាគារ/ផ្ទះសំណាក់)">ស្នាក់នៅ (Hotel / Accommodation)</option>
+                                <option value="ដឹកជញ្ជូន (សាំង/តាក់ស៊ី/យានយន្ត)">ដឹកជញ្ជូន (Transport / Fuel)</option>
+                                <option value="សម្ភារៈ & ឧបករណ៍ប្រើប្រាស់">សម្ភារៈ & ឧបករណ៍ (Supplies)</option>
+                                <option value="ទំនាក់ទំនង & អ៊ីនធឺណិត">ទំនាក់ទំនង (Communication)</option>
+                                <option value="ចំណាយផ្សេងៗ">ចំណាយផ្សេងៗ (Misc)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold text-gray-800 mb-1">ដកប្រាក់ពី</label>
+                            <select id="formPaymentMethod" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-finance-500">
+                                <option value="Cash">សាច់ប្រាក់</option>
+                                <option value="ABA">គណនី ABA</option>
+                                <option value="Personal Out-of-Pocket">ប្រាក់ផ្ទាល់ខ្លួនចេញជំនួស</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-bold text-gray-800 mb-1">មូលហេតុ / ព័ត៌មានបន្ថែម</label>
+                    <input type="text" id="formDescription" placeholder="ឧ. ទិញសាំង ឬចំណាយធ្វើដំណើរ..." class="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-finance-500">
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-sm font-bold text-gray-800 mb-1">ឈ្មោះហាង ឬអ្នកទទួលប្រាក់</label>
+                        <input type="text" id="formPartyName" maxlength="120" placeholder="បញ្ចូលឈ្មោះហាង ឬអ្នកទទួលប្រាក់" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-finance-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold text-gray-800 mb-1">លេខទូរស័ព្ទ</label>
+                        <input type="tel" id="formPartyPhone" maxlength="40" placeholder="ឧ. 012 345 678" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-finance-500">
+                    </div>
+                </div>
+
+                <div class="rounded-xl border border-blue-200 bg-blue-50 p-3 space-y-2">
+                    <p class="text-sm font-bold text-blue-900">ថតរូបដើម្បីចាប់ឈ្មោះហាង និងលេខទូរស័ព្ទ</p>
+                    <input type="file" id="shopScanImage" accept="image/*" capture="environment" class="w-full text-xs text-gray-600">
+                    <button type="button" id="scanShopBtn" onclick="scanShopDetails()" class="w-full rounded-xl bg-blue-700 text-white px-3 py-2.5 text-sm font-bold">អានព័ត៌មានពីរូបថត</button>
+                    <p id="shopScanStatus" class="text-xs text-blue-900" aria-live="polite">អានតែឈ្មោះហាង និងលេខទូរស័ព្ទ។ ត្រូវការអ៊ីនធឺណិតពេលស្កេនប៉ុណ្ណោះ។ សូមពិនិត្យមុនរក្សាទុក។</p>
+                </div>
+
+                <!-- Receipts & ABA Bank Statement Proofs -->
+                <div class="p-3 bg-gray-50 rounded-2xl border border-gray-200 space-y-3">
+                    <p class="text-sm font-bold text-gray-800">ឯកសារភ្ជាប់ (មិនចាំបាច់បញ្ចូលក៏បាន)</p>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-sm text-gray-700 mb-1">រូបភាពវិក្កយបត្រ</label>
+                            <input type="file" id="formReceipt" accept="image/*" class="w-full text-xs text-gray-500 file:mr-2 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-finance-50 file:text-finance-700 hover:file:bg-finance-100 cursor-pointer">
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-700 mb-1">បង្កាន់ដៃផ្ទេរប្រាក់ ABA (រូបភាព ឬ PDF)</label>
+                            <input type="file" id="formAbaProof" accept="image/*,.pdf" class="w-full text-xs text-gray-500 file:mr-2 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex justify-end gap-2 pt-2">
+                    <button type="button" onclick="closeModal()" class="px-4 py-2 rounded-xl text-xs font-semibold bg-gray-100 text-gray-600 hover:bg-gray-200 transition" data-i18n="cancelBtn">បោះបង់</button>
+                    <button type="submit" class="px-5 py-2 rounded-xl text-xs font-bold bg-finance-600 hover:bg-finance-700 text-white transition shadow-sm" data-i18n="saveBtn">រក្សាទុក</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Transaction Details / Receipt -->
+    <div id="detailModal" class="fixed inset-0 bg-black/50 backdrop-blur-xs z-[60] hidden items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-xl w-full p-6 shadow-2xl max-h-[90vh] overflow-y-auto">
+            <div class="flex items-center justify-between border-b pb-3 mb-4">
+                <h3 class="font-bold text-lg text-gray-900">ព័ត៌មានលម្អិតប្រតិបត្តិការ</h3>
+                <button onclick="closeDetailModal()" class="w-9 h-9 rounded-full bg-gray-100 text-gray-600">✕</button>
+            </div>
+            <div id="detailContent" class="space-y-3 text-sm"></div>
+            <div class="flex flex-wrap justify-end gap-2 pt-4">
+                <button id="detailEditBtn" onclick="editCurrentDetail()" class="px-4 py-2 rounded-xl bg-finance-600 text-white text-sm font-bold">កែប្រែ</button>
+                <button onclick="printCurrentReceipt()" class="px-4 py-2 rounded-xl bg-gray-900 text-white text-sm font-bold">Print / Save PDF</button>
+                <button onclick="closeDetailModal()" class="px-4 py-2 rounded-xl bg-gray-100 text-gray-700 text-sm">បិទ</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: New Month Creation -->
+    <div id="newMonthModal" class="fixed inset-0 bg-black/50 backdrop-blur-xs z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-gray-100 space-y-4">
+            <div class="flex justify-between items-center pb-3 border-b border-gray-100">
+                <h3 class="font-bold text-gray-900 text-lg" data-i18n="newMonthModalTitle">បើកខែថ្មីប្រចាំដំណើរ</h3>
+                <button onclick="closeNewMonthModal()" class="w-8 h-8 rounded-full bg-gray-100 text-gray-500 hover:bg-gray-200 flex items-center justify-center transition">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div class="space-y-3">
+                <label class="block text-xs font-semibold text-gray-700" data-i18n="selectMonthLabel">ជ្រើសរើសខែ និងឆ្នាំ:</label>
+                <input type="month" id="newMonthInput" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-finance-500">
+            </div>
+            <div class="flex justify-end gap-2 pt-2">
+                <button onclick="closeNewMonthModal()" class="px-4 py-2 rounded-xl text-xs font-semibold bg-gray-100 text-gray-600 hover:bg-gray-200 transition" data-i18n="cancelBtn">បោះបង់</button>
+                <button onclick="createNewMonth()" class="px-5 py-2 rounded-xl text-xs font-bold bg-finance-600 hover:bg-finance-700 text-white transition shadow-sm" data-i18n="confirmBtn">បញ្ជាក់ / បើកខែ</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        const STORAGE_KEY = 'msb_v4_trip_data';
+        const EXCHANGE_RATE = 4000; // Unified Exchange Rate 1 USD = 4,000 KHR
+
+        let db = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {
+            months: {}, // Format: { "2026-11": { closed: false, transactions: [] } }
+            activeMonth: new Date().toISOString().slice(0, 7)
+        };
+
+        let currentLang = 'km'; // 'km' or 'en'
+        let selectedHistoryMonth = db.activeMonth;
+        let editingTransactionId = null;
+        let currentDetailTransactionId = null;
+
+        const translations = {
+            km: {
+                subtitle: "Personal Finance V4.2 PRO",
+                newMonthBtn: "បើកខែថ្មី",
+                closedMonthNoticeTitle: "ខែនេះត្រូវបានបិទបញ្ជីរួចរាល់ (Closed Month)",
+                closedMonthNoticeDesc: "ទិន្នន័យត្រូវបានរក្សាទុកជាប្រវត្តិសាស្ត្រ មិនអាចកែប្រែឬបន្ថែមថ្មីបានទេ លុះត្រាតែបើកឡើងវិញ។",
+                unlockBtn: "ដោះសោខែ",
+                usdBalance: "ប្រាក់សល់ USD / KHR",
+                in: "ទទួលបាន:",
+                out: "ចំណាយ:",
+                unifiedUsdTotal: "សរុបរួមជា USD (អត្រា 4,000)",
+                rateNote: "1 USD = 4,000 KHR គណនាតែមួយ",
+                paymentBreakdown: "បែងចែកសាច់ប្រាក់ & ABA",
+                cashAndAbaTracking: "តាមដានគណនីច្បាស់លាស់",
+                personalAdvanced: "ប្រាក់ផ្ទាល់ខ្លួនចេញជំនួស",
+                advanceNote: "ទឹកប្រាក់សងវិញ / ចេញមុន",
+                tabTx: "បញ្ជីចំណាយ & ថវិកា",
+                tabHistory: "ប្រវត្តិប្រចាំខែ & បិទបញ្ជី",
+                tabReports: "របាយការណ៍ & Backup",
+                addIncome: "កត់ត្រាថវិកាទទួលបាន",
+                addExpense: "កត់ត្រាចំណាយ",
+                currentMonthRecords: "បញ្ជីប្រតិបត្តិការខែបច្ចុប្បន្ន",
+                filterAll: "ទាំងអស់",
+                filterIncome: "ថវិកាទទួលបាន",
+                filterExpense: "ចំណាយ",
+                thDate: "កាលបរិច្ឆេទ",
+                thType: "ប្រភេទ",
+                thCategory: "ចំណាត់ថ្នាក់ / ពិពណ៌នា",
+                thAmount: "ទឹកប្រាក់ (ដើម)",
+                thConverted: "កាត់ជា USD ($4,000)",
+                thMethod: "ទូទាត់/ប្រភព",
+                thProofs: "Bank Statement / វិក្កយបត្រ",
+                thAction: "សកម្មភាព",
+                noData: "មិនទាន់មានទិន្នន័យក្នុងខែនេះនៅឡើយទេ",
+                monthlyHistoryList: "ប្រវត្តិខែទាំងអស់",
+                historyDesc: "ជ្រើសរើសខែដើម្បីមើលទិន្នន័យចាស់ បិទបញ្ជីខែ ឬទាញយក CSV ប្រចាំខែ។",
+                closeMonthBtn: "បិទបញ្ជីខែនេះ",
+                openMonthBtn: "បើកបញ្ជីខែនេះឡើងវិញ",
+                exportCsvBtn: "ទាញយក CSV",
+                deleteMonthBtn: "លុបខែនេះ",
+                totalTxCount: "ចំនួនប្រតិបត្តិការ",
+                status: "ស្ថានភាព",
+                backupRestoreTitle: "ការបម្រុងទុកទិន្នន័យ (Backup & Restore)",
+                backupDesc: "ទិន្នន័យទាំងអស់ត្រូវបានរក្សាទុកក្នុង Browser របស់អ្នក។ សូមធ្វើការ Backup ជាប្រចាំដើម្បីការពារការបាត់បង់ទិន្នន័យ។",
+                backupBtn: "ទាញយក Backup (JSON)",
+                restoreBtn: "បញ្ចូលទិន្នន័យ (Restore)",
+                exportExcelTitle: "ទាញយករបាយការណ៍ផ្សេងៗ",
+                pwaGuideTitle: "ការដំឡើងលើ iPhone & កុំព្យូទ័រ (PWA)",
+                pwaStep1: "នៅលើ iPhone (Safari): ចុចប៊ូតុង Share ខាងក្រោមអេក្រង់ រួចជ្រើសរើស Add to Home Screen ដើម្បីប្រើប្រាស់ដូចកម្មវិធីទូរស័ព្ទ[cite: 3]។",
+                pwaStep2: "នៅលើ Windows PC: អាចបើកតាម Chrome ឬ Edge រួចចុច Install App នៅលើ Address Bar[cite: 3]។",
+                pwaStep3: "សុវត្ថិភាពទិន្នន័យ៖ មិនមានការស្នើសុំ ABA PIN, Password ឬ OTP ណាមួយឡើយ[cite: 3]។",
+                addTxTitle: "កត់ត្រាប្រតិបត្តិការថ្មី",
+                formType: "ប្រភេទ",
+                formDate: "កាលបរិច្ឆេទ",
+                formAmount: "ចំនួនទឹកប្រាក់",
+                formCurrency: "រូបិយប័ណ្ណ",
+                formCategory: "ចំណាត់ថ្នាក់ចំណាយ",
+                formPaymentMethod: "ប្រភពទូទាត់",
+                formDescription: "ពិពណ៌នាបន្ថែម",
+                proofsTitle: "វិក្កយបត្រ និង Bank Statement / Slip ABA (ជាជម្រើស)",
+                receiptUpload: "រូបភាពវិក្កយបត្រ (Receipt Image)",
+                abaProofUpload: "Bank Statement / Slip (រូបភាព ឬ PDF)",
+                cancelBtn: "បោះបង់",
+                saveBtn: "រក្សាទុក",
+                newMonthModalTitle: "បើកខែថ្មីប្រចាំដំណើរ",
+                selectMonthLabel: "ជ្រើសរើសខែ និងឆ្នាំ:",
+                confirmBtn: "បញ្ជាក់ / បើកខែ"
+            },
+            en: {
+                subtitle: "Personal Finance V4.2 PRO",
+                newMonthBtn: "New Month",
+                closedMonthNoticeTitle: "Month Closed",
+                closedMonthNoticeDesc: "Data is archived and locked. Unlock to make edits.",
+                unlockBtn: "Unlock Month",
+                usdBalance: "USD / KHR Balance",
+                in: "In:",
+                out: "Out:",
+                unifiedUsdTotal: "Unified Total USD (Rate 4,000)",
+                rateNote: "1 USD = 4,000 KHR unified calculation",
+                paymentBreakdown: "Cash & ABA Breakdown",
+                cashAndAbaTracking: "Clear account tracking",
+                personalAdvanced: "Personal Advance",
+                advanceNote: "Out-of-pocket / Reimburse",
+                tabTx: "Transactions & Budget",
+                tabHistory: "Monthly History & Closing",
+                tabReports: "Reports & Backup",
+                addIncome: "Record Income",
+                addExpense: "Record Expense",
+                currentMonthRecords: "Current Month Transactions",
+                filterAll: "All",
+                filterIncome: "Income",
+                filterExpense: "Expense",
+                thDate: "Date",
+                thType: "Type",
+                thCategory: "Category / Desc",
+                thAmount: "Original Amount",
+                thConverted: "Converted USD ($4k)",
+                thMethod: "Payment / Source",
+                thProofs: "Bank Statement / Receipt",
+                thAction: "Action",
+                noData: "No transactions recorded for this month yet",
+                monthlyHistoryList: "All Months History",
+                historyDesc: "Select a month to view history, close month, or export CSV.",
+                closeMonthBtn: "Close Month",
+                openMonthBtn: "Re-open Month",
+                exportCsvBtn: "Export CSV",
+                deleteMonthBtn: "Delete Month",
+                totalTxCount: "Total Transactions",
+                status: "Status",
+                backupRestoreTitle: "Backup & Restore",
+                backupDesc: "Data is stored locally in your browser. Backup regularly.",
+                backupBtn: "Download Backup (JSON)",
+                restoreBtn: "Restore Data",
+                exportExcelTitle: "Reports",
+                pwaGuideTitle: "PWA Installation Guide",
+                pwaStep1: "On iPhone (Safari): Tap Share and select 'Add to Home Screen'[cite: 3].",
+                pwaStep2: "On Windows PC: Open in Chrome/Edge and click Install App on Address Bar[cite: 3].",
+                pwaStep3: "Security: No ABA PIN, passwords, or OTP requested[cite: 3].",
+                addTxTitle: "New Transaction",
+                formType: "Type",
+                formDate: "Date",
+                formAmount: "Amount",
+                formCurrency: "Currency",
+                formCategory: "Category",
+                formPaymentMethod: "Payment Source",
+                formDescription: "Description",
+                proofsTitle: "Receipt & ABA Bank Statement (Optional)",
+                receiptUpload: "Receipt Image",
+                abaProofUpload: "Bank Statement / Slip",
+                cancelBtn: "Cancel",
+                saveBtn: "Save",
+                newMonthModalTitle: "Open New Trip Month",
+                selectMonthLabel: "Select Month & Year:",
+                confirmBtn: "Confirm / Open"
+            }
+        };
+
+        // Backward-compatible normalization: preserve all old transactions and add optional empty fields only.
+        Object.values(db.months || {}).forEach(m => { if (!Array.isArray(m.transactions)) m.transactions = []; m.transactions.forEach(t => { t.partyName ??= ''; t.partyPhone ??= ''; }); });
+        if (!db.activeMonth) db.activeMonth = new Date().toISOString().slice(0, 7);
+        // Initialize DB structure if empty
+        if (!db.months[db.activeMonth]) {
+            db.months[db.activeMonth] = { closed: false, transactions: [] };
+        }
+
+        function saveData() {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(db));
+        }
+
+        // Format Currency Helper
+        function formatMoney(amount, currency) {
+            if (currency === 'KHR') {
+                return '៛' + Number(amount).toLocaleString('en-US', { maximumFractionDigits: 0 });
+            }
+            return '$' + Number(amount).toFixed(2);
+        }
+
+        // Convert any currency to USD using unified rate 4,000
+        function toUnifiedUSD(amount, currency) {
+            if (currency === 'KHR') {
+                return amount / EXCHANGE_RATE;
+            }
+            return Number(amount);
+        }
+
+        // Initialization on Load
+        window.onload = function() {
+            document.getElementById('formDate').value = new Date().toISOString().slice(0, 10);
+            refreshMonthSelectors();
+            renderAll();
+        };
+
+        function refreshMonthSelectors() {
+            const select = document.getElementById('activeMonthSelect');
+            select.innerHTML = '';
+            
+            // Ensure active month exists
+            if (!db.months[db.activeMonth]) {
+                db.months[db.activeMonth] = { closed: false, transactions: [] };
+            }
+
+            const sortedMonths = Object.keys(db.months).sort().reverse();
+            sortedMonths.forEach(m => {
+                const opt = document.createElement('option');
+                opt.value = m;
+                const isClosed = db.months[m].closed ? ' (🔒 Closed)' : '';
+                opt.textContent = m + isClosed;
+                if (m === db.activeMonth) opt.selected = true;
+                select.appendChild(opt);
+            });
+
+            document.getElementById('activeMonthBadge').textContent = db.activeMonth;
+        }
+
+        function changeActiveMonth(month) {
+            db.activeMonth = month;
+            if (!db.months[month]) {
+                db.months[month] = { closed: false, transactions: [] };
+            }
+            saveData();
+            renderAll();
+        }
+
+        function renderAll() {
+            refreshMonthSelectors();
+            checkClosedStatus();
+            renderSummaryCards();
+            renderTransactions();
+            renderHistoryTab();
+        }
+
+        function checkClosedStatus() {
+            const currentMonthData = db.months[db.activeMonth] || { closed: false, transactions: [] };
+            const banner = document.getElementById('closedMonthBanner');
+            const addIncBtn = document.getElementById('addIncomeBtn');
+            const addExpBtn = document.getElementById('addExpenseBtn');
+
+            if (currentMonthData.closed) {
+                banner.classList.remove('hidden');
+                addIncBtn.classList.add('opacity-50', 'pointer-events-none');
+                addExpBtn.classList.add('opacity-50', 'pointer-events-none');
+            } else {
+                banner.classList.add('hidden');
+                addIncBtn.classList.remove('opacity-50', 'pointer-events-none');
+                addExpBtn.classList.remove('opacity-50', 'pointer-events-none');
+            }
+        }
+
+        // Summary Calculations
+        function renderSummaryCards() {
+            const txs = (db.months[db.activeMonth] && db.months[db.activeMonth].transactions) || [];
+            
+            let totalUsdIn = 0, totalUsdOut = 0;
+            let totalKhrIn = 0, totalKhrOut = 0;
+            let unifiedTotalUsd = 0;
+            let cashTotalUsd = 0, abaTotalUsd = 0;
+            let personalTotalUsd = 0;
+
+            txs.forEach(t => {
+                const unified = toUnifiedUSD(t.amount, t.currency);
+                if (t.type === 'income') {
+                    if (t.currency === 'USD') totalUsdIn += t.amount;
+                    else totalKhrIn += t.amount;
+                    unifiedTotalUsd += unified;
+                } else {
+                    if (t.currency === 'USD') totalUsdOut += t.amount;
+                    else totalKhrOut += t.amount;
+                    unifiedTotalUsd -= unified;
+
+                    // Payment source breakdown
+                    if (t.paymentMethod === 'Cash') cashTotalUsd += unified;
+                    else if (t.paymentMethod === 'ABA') abaTotalUsd += unified;
+                    else if (t.paymentMethod === 'Personal Out-of-Pocket') personalTotalUsd += unified;
+                }
+            });
+
+            const netUsd = totalUsdIn - totalUsdOut;
+            const netKhr = totalKhrIn - totalKhrOut;
+
+            document.getElementById('summaryUsdBalance').textContent = `$${netUsd.toFixed(2)} / ៛${netKhr.toLocaleString()}`;
+            document.getElementById('summaryUsdIn').textContent = `$${totalUsdIn.toFixed(2)}`;
+            document.getElementById('summaryUsdOut').textContent = `$${totalUsdOut.toFixed(2)}`;
+            document.getElementById('summaryUnifiedUsd').textContent = `$${unifiedTotalUsd.toFixed(2)}`;
+            document.getElementById('summaryCashTotal').textContent = `$${cashTotalUsd.toFixed(2)}`;
+            document.getElementById('summaryAbaTotal').textContent = `$${abaTotalUsd.toFixed(2)}`;
+            document.getElementById('summaryPersonalTotal').textContent = `$${personalTotalUsd.toFixed(2)}`;
+
+            // Clear outgoing / expense summary (KHR is converted at the app's existing 4,000 rate).
+            let expenseCount = 0, expenseCash = 0, expenseAba = 0, expensePersonal = 0, expenseTotal = 0;
+            txs.forEach(t => {
+                if (t.type !== 'expense') return;
+                expenseCount++;
+                const value = toUnifiedUSD(Number(t.amount || 0), t.currency);
+                expenseTotal += value;
+                if (t.paymentMethod === 'ABA') expenseAba += value;
+                else if (t.paymentMethod === 'Personal Out-of-Pocket') expensePersonal += value;
+                else expenseCash += value;
+            });
+            document.getElementById('expenseOverviewTotal').textContent = `$${expenseTotal.toFixed(2)}`;
+            document.getElementById('expenseOverviewCount').textContent = expenseCount.toLocaleString();
+            document.getElementById('expenseOverviewCash').textContent = `$${expenseCash.toFixed(2)}`;
+            document.getElementById('expenseOverviewAba').textContent = `$${expenseAba.toFixed(2)}`;
+            document.getElementById('expenseOverviewPersonal').textContent = `$${expensePersonal.toFixed(2)}`;
+        }
+
+        function showExpenseOnly() {
+            const filter = document.getElementById('filterType');
+            filter.value = 'expense';
+            renderTransactions();
+            document.getElementById('tabContentTransactions').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        // Render Transactions Table
+        function renderTransactions() {
+            const tbody = document.getElementById('transactionsTableBody');
+            const noTx = document.getElementById('noTransactions');
+            tbody.innerHTML = '';
+
+            const txs = (db.months[db.activeMonth] && db.months[db.activeMonth].transactions) || [];
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            const filterType = document.getElementById('filterType').value;
+
+            const filtered = txs.filter(t => {
+                const haystack = [t.description, t.category, t.partyName, t.partyPhone, t.id, t.paymentMethod].join(' ').toLowerCase();
+                const matchesSearch = haystack.includes(search) || String(t.amount || '').includes(search) || (t.date || '').includes(search);
+                const matchesType = filterType === 'all' || t.type === filterType;
+                return matchesSearch && matchesType;
+            });
+
+            if (filtered.length === 0) {
+                noTx.classList.remove('hidden');
+                return;
+            }
+            noTx.classList.add('hidden');
+
+            filtered.forEach(t => {
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-gray-50/80 transition border-b border-gray-100 text-xs md:text-sm";
+                
+                const isInc = t.type === 'income';
+                const typeBadge = isInc 
+                    ? `<span class="bg-emerald-50 text-emerald-700 font-bold px-2.5 py-1 rounded-lg border border-emerald-200">ថវិកាចូល (+)</span>`
+                    : `<span class="bg-red-50 text-red-700 font-bold px-2.5 py-1 rounded-lg border border-red-200">ចំណាយ (-)</span>`;
+
+                const amountColor = isInc ? 'text-emerald-600 font-bold' : 'text-gray-900 font-bold';
+                const convertedUsd = toUnifiedUSD(t.amount, t.currency);
+
+                let proofsHtml = '<span class="text-gray-400 italic">គ្មាន</span>';
+                if (t.receipt || t.abaProof) {
+                    proofsHtml = '<div class="flex items-center gap-1.5">';
+                    if (t.receipt) proofsHtml += `<a href="${t.receipt}" target="_blank" class="text-xs bg-finance-50 text-finance-700 px-2 py-1 rounded-md border border-finance-200 hover:bg-finance-100 font-medium"><i class="fa-solid fa-receipt"></i> វិក្កយបត្រ</a>`;
+                    if (t.abaProof) proofsHtml += `<a href="${t.abaProof}" target="_blank" class="text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded-md border border-blue-200 hover:bg-blue-100 font-medium"><i class="fa-solid fa-file-invoice-dollar"></i> Slip ABA</a>`;
+                    proofsHtml += '</div>';
+                }
+
+                tr.innerHTML = `
+                    <td class="p-3.5 pl-4 text-gray-600 font-medium">${t.date}</td>
+                    <td class="p-3.5">${typeBadge}</td>
+                    <td class="p-3.5 font-semibold text-gray-800">${escapeHtml(t.category || t.description || 'គ្មានចំណាត់ថ្នាក់')} <div class="text-xs text-gray-400 font-normal">${escapeHtml(t.partyName || '')} ${t.partyPhone ? '· ' + escapeHtml(t.partyPhone) : ''}</div><div class="text-xs text-gray-400 font-normal">${escapeHtml(t.description || '')}</div></td>
+                    <td class="p-3.5 ${amountColor}">${formatMoney(t.amount, t.currency)}</td>
+                    <td class="p-3.5 text-finance-700 font-semibold">$${convertedUsd.toFixed(2)}</td>
+                    <td class="p-3.5 text-gray-600">${t.paymentMethod || 'Cash'}</td>
+                    <td class="p-3.5">${proofsHtml}</td>
+                    <td class="p-3.5 pr-4 text-right">
+                        <button onclick="showTransactionDetails('${t.id}')" title="មើលព័ត៌មាន" class="w-8 h-8 rounded-lg bg-blue-50 text-blue-700 hover:bg-blue-100 transition inline-flex items-center justify-center mr-1"><i class="fa-solid fa-eye text-xs"></i></button>
+                        <button onclick="editTransaction('${t.id}')" title="កែប្រែ" class="w-8 h-8 rounded-lg bg-amber-50 text-amber-700 hover:bg-amber-100 transition inline-flex items-center justify-center mr-1"><i class="fa-solid fa-pen text-xs"></i></button>
+                        <button onclick="deleteTransaction('${t.id}')" title="លុប" class="w-8 h-8 rounded-lg bg-red-50 text-red-600 hover:bg-red-100 transition inline-flex items-center justify-center"><i class="fa-solid fa-trash-can text-xs"></i></button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // Modal Controls
+        function openModal(type) {
+            const currentMonthData = db.months[db.activeMonth];
+            if (currentMonthData && currentMonthData.closed) {
+                alert("ខែនេះត្រូវបានបិទបញ្ជីរួចរាល់ មិនអាចកែប្រែបានទេ។");
+                return;
+            }
+
+            document.getElementById('txModal').classList.remove('hidden');
+            document.getElementById('formType').value = type;
+            editingTransactionId = null;
+            document.getElementById('modalTitle').textContent = type === 'expense' ? 'កត់ត្រាចំណាយថ្មី' : 'កត់ត្រាប្រាក់ទទួលបានថ្មី';
+            document.getElementById('txId').value = '';
+            document.getElementById('formAmount').value = '';
+            document.getElementById('formPartyName').value = '';
+            document.getElementById('formPartyPhone').value = '';
+            document.getElementById('formDescription').value = '';
+            document.getElementById('formReceipt').value = '';
+            document.getElementById('formAbaProof').value = '';
+            onFormTypeChange();
+        }
+
+        function closeModal() {
+            document.getElementById('txModal').classList.add('hidden');
+        }
+
+        function onFormTypeChange() {
+            const type = document.getElementById('formType').value;
+            const expenseGroup = document.getElementById('expenseFieldsGroup');
+            const hint = document.getElementById('expenseFormHint');
+            if (type === 'income') {
+                expenseGroup.classList.add('hidden');
+                hint.classList.add('hidden');
+            } else {
+                expenseGroup.classList.remove('hidden');
+                hint.classList.remove('hidden');
+            }
+        }
+
+        // Save Transaction
+        function saveTransaction(e) {
+            e.preventDefault();
+            const type = document.getElementById('formType').value;
+            const date = document.getElementById('formDate').value;
+            const amount = parseFloat(document.getElementById('formAmount').value);
+            const currency = document.getElementById('formCurrency').value;
+            const category = type === 'expense' ? document.getElementById('formCategory').value : 'ថវិកាទទួលបាន (Income)';
+            const paymentMethod = type === 'expense' ? document.getElementById('formPaymentMethod').value : 'Cash';
+            const description = document.getElementById('formDescription').value;
+            const partyName = document.getElementById('formPartyName').value.trim();
+            const partyPhone = document.getElementById('formPartyPhone').value.trim();
+            if (!Number.isFinite(amount) || amount <= 0) return alert('សូមបញ្ចូលចំនួនប្រាក់ធំជាងសូន្យ។');
+            if (!date) return alert('សូមជ្រើសរើសកាលបរិច្ឆេទ។');
+
+            const receiptFile = document.getElementById('formReceipt').files[0];
+            const abaFile = document.getElementById('formAbaProof').files[0];
+
+            // File to Base64 reader helper
+            const readFileAsDataURL = (file) => {
+                return new Promise((resolve) => {
+                    if (!file) return resolve(null);
+                    const reader = new FileReader();
+                    reader.onload = (uploadEvent) => resolve(uploadEvent.target.result);
+                    reader.readAsDataURL(file);
+                });
+            };
+
+            Promise.all([readFileAsDataURL(receiptFile), readFileAsDataURL(abaFile)]).then(([receiptData, abaData]) => {
+                const oldTx = editingTransactionId ? findTransaction(editingTransactionId) : null;
+                const tx = {
+                    id: editingTransactionId || ('tx_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8)),
+                    type,
+                    date,
+                    amount,
+                    currency,
+                    category,
+                    paymentMethod,
+                    description,
+                    partyName,
+                    partyPhone,
+                    receipt: receiptData || (oldTx && oldTx.receipt) || null,
+                    abaProof: abaData || (oldTx && oldTx.abaProof) || null
+                };
+
+                // Assign to month based on date or activeMonth
+                const txMonth = date.slice(0, 7);
+                if (db.months[txMonth]?.closed) { alert('ខែគោលដៅនេះបានបិទបញ្ជី។ សូមបើកខែឡើងវិញមុនរក្សាទុក។'); return; }
+                if (!db.months[txMonth]) {
+                    db.months[txMonth] = { closed: false, transactions: [] };
+                }
+
+                if (editingTransactionId && oldTx) {
+                    const oldMonth = oldTx.date.slice(0, 7);
+                    if (db.months[oldMonth]) db.months[oldMonth].transactions = db.months[oldMonth].transactions.filter(x => x.id !== editingTransactionId);
+                }
+                db.months[txMonth].transactions.unshift(tx);
+                editingTransactionId = null;
+                saveData();
+                closeModal();
+                renderAll();
+            });
+        }
+
+        function deleteTransaction(id) {
+            const currentMonthData = db.months[db.activeMonth];
+            if (currentMonthData && currentMonthData.closed) {
+                alert("ខែនេះត្រូវបានបិទបញ្ជីរួចរាល់ មិនអាចលុបទិន្នន័យបានទេ។");
+                return;
+            }
+
+            if (confirm("តើអ្នកពិតជាចង់លុបប្រតិបត្តិការនេះមែនទេ?")) {
+                if (!db.months[db.activeMonth]) return;
+                db.months[db.activeMonth].transactions = db.months[db.activeMonth].transactions.filter(t => t.id !== id);
+                saveData();
+                renderAll();
+            }
+        }
+
+        // Transaction details, editing and printable receipt
+        function escapeHtml(value) {
+            return String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+        }
+        function findTransaction(id) {
+            for (const [month, data] of Object.entries(db.months || {})) {
+                const found = (data.transactions || []).find(t => t.id === id);
+                if (found) return found;
+            }
+            return null;
+        }
+        function showTransactionDetails(id) {
+            const t = findTransaction(id); if (!t) return alert('រកមិនឃើញប្រតិបត្តិការនេះទេ។');
+            currentDetailTransactionId = id;
+            const rows = [
+                ['លេខប្រតិបត្តិការ', t.id], ['ប្រភេទ', t.type === 'income' ? 'ប្រាក់ចូល' : 'ចំណាយ'],
+                ['កាលបរិច្ឆេទ', t.date], ['ចំនួនប្រាក់', formatMoney(t.amount, t.currency)],
+                ['ឈ្មោះហាង / អ្នកពាក់ព័ន្ធ', t.partyName || 'មិនបានបញ្ចូល'], ['លេខទូរស័ព្ទ', t.partyPhone || 'មិនបានបញ្ចូល'],
+                ['ចំណាត់ថ្នាក់', t.category || '—'], ['វិធីទូទាត់', t.paymentMethod || 'Cash'], ['កំណត់ចំណាំ', t.description || '—']
+            ];
+            document.getElementById('detailContent').innerHTML = rows.map(([k,v]) => `<div class="flex justify-between gap-4 border-b border-gray-100 py-2"><span class="text-gray-500">${escapeHtml(k)}</span><strong class="text-right break-all">${escapeHtml(v)}</strong></div>`).join('') +
+                `<div class="grid grid-cols-2 gap-3 pt-2">${t.receipt ? `<a class="text-center p-3 rounded-xl bg-finance-50 text-finance-700" href="${t.receipt}" target="_blank" rel="noopener">មើលវិក្កយបត្រ</a>` : '<div class="p-3 rounded-xl bg-gray-50 text-gray-400 text-center">គ្មានវិក្កយបត្រ</div>'}${t.abaProof ? `<a class="text-center p-3 rounded-xl bg-blue-50 text-blue-700" href="${t.abaProof}" target="_blank" rel="noopener">មើល Bank Statement / ABA</a>` : '<div class="p-3 rounded-xl bg-gray-50 text-gray-400 text-center">គ្មានភស្តុតាង ABA</div>'}</div>`;
+            const m = document.getElementById('detailModal'); m.classList.remove('hidden'); m.classList.add('flex');
+            const active = db.months[t.date.slice(0,7)];
+            document.getElementById('detailEditBtn').disabled = !!(active && active.closed);
+            document.getElementById('detailEditBtn').classList.toggle('opacity-40', !!(active && active.closed));
+        }
+        function closeDetailModal() { const m=document.getElementById('detailModal'); m.classList.add('hidden'); m.classList.remove('flex'); }
+        function editCurrentDetail() { if (currentDetailTransactionId) editTransaction(currentDetailTransactionId); }
+        function editTransaction(id) {
+            const t=findTransaction(id); if(!t) return;
+            const month=t.date.slice(0,7); if(db.months[month]?.closed) return alert('ខែនេះបានបិទបញ្ជី។ សូមបើកខែឡើងវិញមុនកែប្រែ។');
+            closeDetailModal(); editingTransactionId=id;
+            document.getElementById('txModal').classList.remove('hidden');
+            document.getElementById('modalTitle').textContent = t.type === 'expense' ? 'កែប្រែព័ត៌មានចំណាយ' : 'កែប្រែព័ត៌មានប្រាក់ចូល';
+            document.getElementById('txId').value=id;
+            document.getElementById('formType').value=t.type; document.getElementById('formDate').value=t.date;
+            document.getElementById('formAmount').value=t.amount; document.getElementById('formCurrency').value=t.currency;
+            document.getElementById('formCategory').value=t.category || ''; document.getElementById('formPaymentMethod').value=t.paymentMethod || 'Cash';
+            document.getElementById('formDescription').value=t.description || '';
+            document.getElementById('formPartyName').value=t.partyName || ''; document.getElementById('formPartyPhone').value=t.partyPhone || '';
+            document.getElementById('formReceipt').value=''; document.getElementById('formAbaProof').value=''; onFormTypeChange();
+        }
+        function printCurrentReceipt() {
+            const t=findTransaction(currentDetailTransactionId); if(!t) return;
+            const w=window.open('', '_blank'); if(!w) return alert('សូមអនុញ្ញាត Pop-up ដើម្បី Print / Save PDF។');
+            const title=t.type==='income'?'បង្កាន់ដៃប្រាក់ចូល':'បង្កាន់ដៃចំណាយ';
+            w.document.write(`<!doctype html><html lang="km"><meta charset="utf-8"><title>${title}</title><style>body{font-family:Arial,sans-serif;padding:32px;color:#17211b}h1{color:#15803d}hr{border:0;border-top:1px solid #ddd;margin:18px 0}.row{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid #eee}.amount{font-size:24px;font-weight:bold;color:#15803d}</style><h1>MY SECOND BRAIN</h1><h2>${title}</h2><hr>${[['លេខប្រតិបត្តិការ',t.id],['កាលបរិច្ឆេទ',t.date],['ឈ្មោះហាង / អ្នកពាក់ព័ន្ធ',t.partyName||'—'],['លេខទូរស័ព្ទ',t.partyPhone||'—'],['ចំណាត់ថ្នាក់',t.category||'—'],['វិធីទូទាត់',t.paymentMethod||'Cash'],['កំណត់ចំណាំ',t.description||'—']].map(([k,v])=>`<div class="row"><span>${escapeHtml(k)}</span><b>${escapeHtml(v)}</b></div>`).join('')}<p class="amount">${escapeHtml(formatMoney(t.amount,t.currency))}</p><hr><p>ឯកសារនេះបង្កើតពី MY SECOND BRAIN V4.2 PRO</p><script>window.onload=()=>window.print()<\/script></html>`); w.document.close();
+        }
+
+        // New Month Modal
+        function openNewMonthModal() {
+            document.getElementById('newMonthModal').classList.remove('hidden');
+            document.getElementById('newMonthInput').value = new Date().toISOString().slice(0, 7);
+        }
+        function closeNewMonthModal() {
+            document.getElementById('newMonthModal').classList.add('hidden');
+        }
+        function createNewMonth() {
+            const m = document.getElementById('newMonthInput').value;
+            if (!m) return alert("សូមជ្រើសរើសខែជាមុនសិន!");
+            if (!db.months[m]) {
+                db.months[m] = { closed: false, transactions: [] };
+            }
+            db.activeMonth = m;
+            saveData();
+            closeNewMonthModal();
+            renderAll();
+        }
+
+        // Tab Switching
+        function switchTab(tab) {
+            ['transactions', 'history', 'reports'].forEach(t => {
+                document.getElementById(`tabContent${t.charAt(0).toUpperCase() + t.slice(1)}`).classList.add('hidden');
+            });
+            ['Tx', 'History', 'Reports'].forEach(t => {
+                const btn = document.getElementById(`tabBtn${t}`);
+                btn.className = "px-4 py-2 rounded-xl text-sm font-semibold transition bg-gray-100 text-gray-600 hover:bg-gray-200 flex items-center gap-2";
+            });
+
+            document.getElementById(`tabContent${tab.charAt(0).toUpperCase() + tab.slice(1)}`).classList.remove('hidden');
+            const activeBtn = document.getElementById(`tabBtn${tab.charAt(0).toUpperCase() + tab.slice(1)}`);
+            activeBtn.className = "px-4 py-2 rounded-xl text-sm font-bold transition bg-finance-600 text-white shadow-sm flex items-center gap-2";
+
+            if (tab === 'history') {
+                renderHistoryTab();
+            }
+        }
+
+        // History Tab Rendering
+        function renderHistoryTab() {
+            const container = document.getElementById('monthsHistoryContainer');
+            container.innerHTML = '';
+
+            const sortedMonths = Object.keys(db.months).sort().reverse();
+            if (!sortedMonths.includes(selectedHistoryMonth)) {
+                selectedHistoryMonth = db.activeMonth;
+            }
+
+            sortedMonths.forEach(m => {
+                const isSelected = m === selectedHistoryMonth;
+                const mData = db.months[m];
+                const btnClass = isSelected 
+                    ? "bg-finance-50 border-2 border-finance-500 text-finance-900 font-bold" 
+                    : "bg-gray-50 border border-gray-200 text-gray-700 hover:bg-gray-100 font-semibold";
+
+                const div = document.createElement('div');
+                div.className = `p-3 rounded-xl cursor-pointer transition flex justify-between items-center ${btnClass}`;
+                div.onclick = () => { selectedHistoryMonth = m; renderHistoryTab(); };
+
+                div.innerHTML = `
+                    <div>
+                        <p class="text-sm">${m} ${mData.closed ? '🔒' : ''}</p>
+                        <p class="text-xs text-gray-400">${mData.transactions.length} ប្រតិបត្តិការ</p>
+                    </div>
+                    <i class="fa-solid fa-chevron-right text-xs text-gray-400"></i>
+                `;
+                container.appendChild(div);
+            });
+
+            // Render details for selectedHistoryMonth
+            const histData = db.months[selectedHistoryMonth] || { closed: false, transactions: [] };
+            document.getElementById('historyDetailTitle').textContent = `ព័ត៌មានលម្អិតខែ: ${selectedHistoryMonth}`;
+            
+            const statusBadge = document.getElementById('histStatusBadge');
+            const closeBtnText = document.getElementById('closeMonthBtnText');
+            if (histData.closed) {
+                statusBadge.textContent = "បិទបញ្ជីរួច (Closed)";
+                statusBadge.className = "text-base font-bold text-amber-600";
+                closeBtnText.textContent = "បើកបញ្ជីខែនេះឡើងវិញ";
+            } else {
+                statusBadge.textContent = "សកម្ម (Active)";
+                statusBadge.className = "text-base font-bold text-emerald-600";
+                closeBtnText.textContent = "បិទបញ្ជីខែនេះ";
+            }
+
+            let uIn = 0, uOut = 0;
+            histData.transactions.forEach(t => {
+                const un = toUnifiedUSD(t.amount, t.currency);
+                if (t.type === 'income') uIn += un;
+                else uOut += un;
+            });
+            const unBal = uIn - uOut;
+
+            document.getElementById('histUsdBal').textContent = `$${unBal.toFixed(2)}`;
+            document.getElementById('histUnifiedBal').textContent = `$${unBal.toFixed(2)}`;
+            document.getElementById('histTxCount').textContent = histData.transactions.length;
+
+            // History table body
+            const hTbody = document.getElementById('historyTableBody');
+            hTbody.innerHTML = '';
+            histData.transactions.forEach(t => {
+                const tr = document.createElement('tr');
+                tr.className = "border-b border-gray-100";
+                tr.innerHTML = `
+                    <td class="p-2.5">${t.date}</td>
+                    <td class="p-2.5">${t.type === 'income' ? 'ចូល' : 'ចំណាយ'}</td>
+                    <td class="p-2.5 font-semibold">${escapeHtml(t.category || t.description)}<div class="text-xs text-gray-400">${escapeHtml(t.partyName||'')} ${escapeHtml(t.partyPhone||'')}</div><button onclick="showTransactionDetails('${t.id}')" class="text-finance-700 underline text-xs">មើលលម្អិត</button></td>
+                    <td class="p-2.5">${formatMoney(t.amount, t.currency)}</td>
+                    <td class="p-2.5 text-finance-700">$${toUnifiedUSD(t.amount, t.currency).toFixed(2)}</td>
+                    <td class="p-2.5">${t.paymentMethod || 'Cash'}</td>
+                `;
+                hTbody.appendChild(tr);
+            });
+        }
+
+        // Toggle Month Closing
+        function toggleCloseMonth() {
+            const mData = db.months[selectedHistoryMonth];
+            if (!mData) return;
+
+            if (mData.closed) {
+                if (confirm(`តើអ្នកចង់បើកសោរខែ ${selectedHistoryMonth} ឡើងវិញមែនទេ?`)) {
+                    mData.closed = false;
+                    saveData();
+                    renderAll();
+                }
+            } else {
+                if (confirm(`តើអ្នកប្រាកដជាចង់បិទបញ្ជីខែ ${selectedHistoryMonth}? ការបិទបញ្ជីនឹងការពារមិនឱ្យមានការកែប្រែទិន្នន័យឡើយ។`)) {
+                    mData.closed = true;
+                    saveData();
+                    renderAll();
+                }
+            }
+        }
+
+        function unlockCurrentMonth() {
+            if (db.months[db.activeMonth]) {
+                db.months[db.activeMonth].closed = false;
+                saveData();
+                renderAll();
+            }
+        }
+
+        function promptDeleteMonth(month) {
+            if (confirm(`ព្រមាន! ការលុបខែ ${month} នឹងលុបទិន្នន័យទាំងអស់ក្នុងខែនោះជាអចិន្ត្រៃយ៍។ បន្តទេ?`)) {
+                delete db.months[month];
+                const remaining = Object.keys(db.months);
+                if (remaining.length === 0) {
+                    db.months[new Date().toISOString().slice(0, 7)] = { closed: false, transactions: [] };
+                }
+                db.activeMonth = Object.keys(db.months)[0];
+                saveData();
+                renderAll();
+            }
+        }
+
+        // CSV Export
+        function exportMonthCsv(month) {
+            const mData = db.months[month];
+            if (!mData || mData.transactions.length === 0) {
+                alert("មិនមានទិន្នន័យសម្រាប់ Export ក្នុងខែនេះទេ!");
+                return;
+            }
+
+            let csvRows = [["Month", "Date", "Type", "Category", "Amount", "Currency", "Converted USD", "Payment Method", "Shop/Person", "Phone", "Description"]];
+            mData.transactions.forEach(t => {
+                csvRows.push([
+                    month,
+                    t.date,
+                    t.type,
+                    `"${(t.category || '').replace(/"/g, '""')}"`,
+                    t.amount,
+                    t.currency,
+                    toUnifiedUSD(t.amount, t.currency).toFixed(2),
+                    t.paymentMethod || 'Cash',
+                    `"${(t.partyName || '').replace(/"/g, '""')}"`,
+                    `"${(t.partyPhone || '').replace(/"/g, '""')}"`,
+                    `"${(t.description || '').replace(/"/g, '""')}"`
+                ]);
+            });
+
+            const csvContent = "\uFEFF" + csvRows.map(e => e.join(",")).join("\n");
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `my-second-brain-${month}.csv`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        // Full Backup & Restore (JSON)
+        function exportFullBackup() {
+            const backup = { ...db, backupVersion: '4.2', exportedAt: new Date().toISOString() };
+            const dataStr = "data:application/json;charset=utf-8," + encodeURIComponent(JSON.stringify(backup, null, 2));
+            const dlAnchor = document.createElement('a');
+            dlAnchor.setAttribute("href", dataStr);
+            dlAnchor.setAttribute("download", `my-second-brain-backup-${new Date().toISOString().slice(0, 10)}.json`);
+            dlAnchor.click();
+        }
+
+        function importFullBackup(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                try {
+                    const parsed = JSON.parse(event.target.result);
+                    if (parsed && parsed.months && confirm('Restore នឹងជំនួសទិន្នន័យបច្ចុប្បន្ន។ តើអ្នកបាន Backup ទិន្នន័យបច្ចុប្បន្នរួចហើយឬនៅ? បន្តទេ?')) {
+                        db = { months: parsed.months, activeMonth: parsed.activeMonth || Object.keys(parsed.months)[0] || new Date().toISOString().slice(0,7) };
+                        Object.values(db.months).forEach(m => { if (!Array.isArray(m.transactions)) m.transactions = []; m.transactions.forEach(t => { t.partyName ??= ''; t.partyPhone ??= ''; }); });
+                        saveData();
+                        renderAll();
+                        alert("បាន Restore ទិន្នន័យជោគជ័យ!");
+                    } else {
+                        alert("ហ្វាល Backup មិនត្រឹមត្រូវ!");
+                    }
+                } catch (err) {
+                    alert("មានបញ្ហាក្នុងការអានហ្វាល JSON!");
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        // Language Toggle
+        function toggleLanguage() {
+            currentLang = currentLang === 'km' ? 'en' : 'km';
+            document.getElementById('langLabel').textContent = currentLang.toUpperCase();
+            
+            const t = translations[currentLang];
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (t[key]) {
+                    el.textContent = t[key];
+                }
+            });
+        }
+
+        // Receipt OCR: load Khmer + English only. No Thai language data is requested.
+        async function scanShopDetails() {
+            const file = document.getElementById('shopScanImage')?.files?.[0];
+            const status = document.getElementById('shopScanStatus');
+            const button = document.getElementById('scanShopBtn');
+            if (!file) { status.textContent = 'សូមថតរូប ឬជ្រើសរើសរូបវិក្កយបត្រជាមុន។'; return; }
+            if (!file.type.startsWith('image/')) { status.textContent = 'សូមជ្រើសរើសឯកសាររូបភាពប៉ុណ្ណោះ។'; return; }
+            button.disabled = true;
+            status.textContent = 'កំពុងអានរូបភាព... សូមរង់ចាំ។';
+            try {
+                if (!window.Tesseract) {
+                    await new Promise((resolve, reject) => {
+                        const script = document.createElement('script');
+                        script.src = 'https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js';
+                        script.onload = resolve; script.onerror = () => reject(new Error('មិនអាចភ្ជាប់បណ្ណាល័យអានរូបភាពបានទេ។'));
+                        document.head.appendChild(script);
+                    });
+                }
+                const worker = await Tesseract.createWorker('eng+khm', 1, {
+                    logger: m => { if (m.status === 'recognizing text') status.textContent = `កំពុងអានរូបភាព ${Math.round((m.progress || 0)*100)}%`; }
+                });
+                const result = await worker.recognize(file);
+                await worker.terminate();
+                // Strip Thai Unicode block from recognized output so Thai characters never enter the form.
+                const lines = (result.data.text || '').split(/\r?\n/).map(x => x.replace(/[\u0E00-\u0E7F]/g, '').trim()).filter(Boolean);
+                const phoneMatch = (lines.join(' ').match(/(?:\+?855[\s.-]?)?(?:0\d{1,2}|\d{2,3})[\s.-]?\d{3}[\s.-]?\d{3,4}/) || [])[0];
+                const nameLine = lines.find(line => /[A-Za-z\u1780-\u17FF]/.test(line) && !/\d{5,}/.test(line) && line.length >= 2);
+                if (nameLine) document.getElementById('formPartyName').value = nameLine.slice(0,120);
+                if (phoneMatch) document.getElementById('formPartyPhone').value = phoneMatch.trim();
+                if (nameLine || phoneMatch) status.textContent = 'បានអានព័ត៌មានហើយ។ សូមពិនិត្យ និងកែតម្រូវមុនរក្សាទុក។';
+                else status.textContent = 'មិនអាចស្គាល់ឈ្មោះហាង ឬលេខទូរស័ព្ទបានច្បាស់ទេ។ សូមបញ្ចូលដោយដៃ ឬថតរូបឱ្យច្បាស់ជាងនេះ។';
+            } catch (error) {
+                status.textContent = error.message || 'មានបញ្ហាក្នុងការអានរូបភាព។ សូមបញ្ចូលព័ត៌មានដោយដៃ។';
+            } finally { button.disabled = false; }
+        }
+
+    </script>
+</body>
+</html>
