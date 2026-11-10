@@ -1,35 +1,115 @@
-<!doctype html>
-<html lang="km">
-<head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#070b19"><meta name="description" content="MY SECOND BRAIN AI PRO — Think Smarter • Live Better">
-<meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="SECOND BRAIN AI PRO">
-<link rel="manifest" href="./manifest.webmanifest"><link rel="apple-touch-icon" href="./icon-192.png">
-<title>MY SECOND BRAIN AI PRO</title>
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Kantumruy+Pro:wght@300;400;500;600;700&display=swap');
-:root{--bg:#070b19;--panel:#0c1428;--panel2:#101c36;--line:rgba(105,155,255,.16);--text:#eef4ff;--muted:#91a4c8;--cyan:#19c8ff;--blue:#287bff;--violet:#9c55ff;--gold:#ffc94e;--green:#38d99b;--shadow:0 20px 70px rgba(0,0,0,.35)}*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 55% -15%,#142d61 0,transparent 45%),var(--bg);color:var(--text);font-family:'Kantumruy Pro',Inter,sans-serif;min-height:100vh}button,input,textarea,select{font:inherit}button{cursor:pointer;color:inherit}.app{min-height:100vh;display:grid;grid-template-columns:270px 1fr}.sidebar{background:rgba(5,10,24,.9);border-right:1px solid var(--line);padding:22px 16px;display:flex;flex-direction:column;gap:18px;min-height:100vh}.brand{display:flex;align-items:center;gap:12px;padding:5px 6px 18px;border-bottom:1px solid var(--line)}.logo{width:48px;height:48px;flex:none;filter:drop-shadow(0 0 13px #1bbdff77)}.brand h1{font:800 14px Inter,sans-serif;letter-spacing:.6px;margin:0}.brand small{display:block;color:#b5c4e8;font-size:11px;margin-top:5px}.gradient{background:linear-gradient(95deg,var(--cyan),#6686ff,var(--violet));-webkit-background-clip:text;background-clip:text;color:transparent}.newchat{border:1px solid #247bff88;background:linear-gradient(100deg,#0b4cae55,#5d31a844);padding:12px;border-radius:13px;text-align:left;font-weight:700;box-shadow:0 0 22px #226bff1c}.navlabel{font-size:10px;color:#6f83aa;text-transform:uppercase;letter-spacing:1.6px;padding:2px 9px}.nav{display:grid;gap:5px}.nav button,.history button{border:1px solid transparent;background:transparent;padding:10px 11px;border-radius:11px;text-align:left;color:#b9c8e5;display:flex;align-items:center;gap:12px;font-size:13px}.nav button:hover,.nav button.active{background:linear-gradient(100deg,#123b765e,#43277c55);border-color:#357fff44;color:#fff}.nav .ico{width:22px;text-align:center;font-size:17px}.history{display:grid;gap:3px;overflow:auto;max-height:180px}.history button{font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.secure{margin-top:auto;border:1px solid #1e926b55;background:#082c2b66;border-radius:13px;padding:12px;color:#9de9c7;font-size:11px}.secure strong{display:block;color:#52e7a6;font-size:13px;margin-bottom:3px}.main{min-width:0;display:flex;flex-direction:column;min-height:100vh}.topbar{height:72px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 28px;background:#080e20bd;backdrop-filter:blur(16px);position:sticky;top:0;z-index:5}.top-left{display:flex;align-items:center;gap:12px}.menu{display:none;border:0;background:none;font-size:22px}.status{width:7px;height:7px;border-radius:50%;background:#39e69d;box-shadow:0 0 12px #39e69d}.top-actions{display:flex;gap:10px;align-items:center}.pill{border:1px solid #4366a4;background:#111d37;padding:8px 12px;border-radius:22px;font-size:12px}.pro{border-color:#b98736;color:#ffd45f;background:#3b2c153d;font-weight:800}.avatar{width:34px;height:34px;border-radius:50%;border:1px solid #5275b4;background:linear-gradient(135deg,#1a8eff,#8d4bff);display:grid;place-items:center}.content{width:min(1100px,100%);margin:0 auto;padding:34px 28px 28px;flex:1}.welcome{text-align:center;margin:20px auto 25px}.welcome h2{font:800 clamp(25px,4vw,39px) Inter,sans-serif;margin:0 0 10px;letter-spacing:-1px}.welcome p{color:#9eb3e0;margin:0;font-size:15px}.welcome .tagline{margin-top:9px;color:#7e94c2;font-size:12px;letter-spacing:1px}.composer{max-width:850px;margin:28px auto 27px;position:relative}.input-shell{display:flex;align-items:flex-end;gap:9px;padding:10px 12px 10px 18px;border:1px solid #258eff;border-radius:28px;background:linear-gradient(110deg,#101d3b,#10112f);box-shadow:0 0 0 3px #167dff12,0 0 35px #087bff32}.input-shell textarea{resize:none;max-height:160px;min-height:38px;flex:1;border:0;outline:0;color:#fff;background:transparent;padding:9px 4px;font-size:15px}.input-shell textarea::placeholder{color:#7f96c4}.circlebtn{border:0;width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,#168dff,#315eff);font-size:19px;box-shadow:0 0 20px #168dff44}.quicktools{display:flex;justify-content:center;gap:9px;flex-wrap:wrap;margin:0 auto 34px}.quicktools button{border:1px solid var(--line);background:#0c1730b8;color:#bdcdef;border-radius:20px;padding:7px 12px;font-size:11px}.quicktools button:hover{border-color:#339eff;color:white}.modules{display:grid;grid-template-columns:repeat(5,1fr);gap:13px;max-width:930px;margin:0 auto}.module{min-height:112px;border:1px solid #1c3e69;background:linear-gradient(145deg,#0d1c35,#0a1226);border-radius:19px;padding:16px 9px;text-align:center;transition:.2s;position:relative;overflow:hidden}.module:before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 50% 0,#1a8dff20,transparent 70%);opacity:.6}.module:hover{transform:translateY(-3px);border-color:#328eff;box-shadow:0 10px 28px #006bff24}.module .emoji{font-size:30px;display:block;margin-bottom:9px;filter:drop-shadow(0 0 8px #20bfff55)}.module span:last-child{font-size:13px;position:relative}.module.selected{border-color:#9462ff;background:linear-gradient(145deg,#17234a,#21143c)}.sectionhead{display:flex;align-items:center;justify-content:space-between;margin:5px auto 13px;max-width:930px;color:#9cb2df;font-size:12px}.chatview{display:none;max-width:850px;margin:0 auto}.chatview.show{display:block}.chatlog{display:grid;gap:17px;margin:22px 0;min-height:220px}.msg{display:flex;gap:10px;align-items:flex-start}.msg.user{flex-direction:row-reverse}.bubble{max-width:min(80%,680px);padding:13px 16px;border:1px solid #293e68;border-radius:17px;background:#111d36;color:#eaf1ff;line-height:1.65;font-size:14px;white-space:pre-wrap;overflow-wrap:anywhere}.user .bubble{background:linear-gradient(120deg,#0754b4,#3c39a0);border-color:#498dff}.botmark{width:34px;height:34px;border:1px solid #5262b4;border-radius:50%;display:grid;place-items:center;background:#121c43;flex:none}.bubble .hint{color:#9cb4e1;font-size:11px;margin-top:8px}.chatcomposer{position:sticky;bottom:12px}.chatcomposer .input-shell{border-radius:20px}.emptyhint{text-align:center;color:#7489b5;font-size:13px;padding:22px}.panel{max-width:850px;margin:10px auto;padding:20px;border:1px solid var(--line);border-radius:18px;background:#0d1830}.panel h3{margin:0 0 8px;font-size:16px}.panel p{color:#9db0d3;font-size:13px;line-height:1.7}.panel input,.panel select{background:#091226;color:#fff;border:1px solid #30476f;border-radius:10px;padding:10px;width:100%;margin:6px 0 12px}.primary{background:linear-gradient(110deg,#087ce9,#7046e8);border:0;border-radius:11px;padding:10px 15px;font-weight:700}.secondary{background:#14223f;border:1px solid #3a5480;border-radius:11px;padding:9px 13px}.footer{text-align:center;color:#60769f;font-size:10px;padding:16px;border-top:1px solid var(--line)}.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:#17294a;border:1px solid #3c70bd;padding:10px 16px;border-radius:12px;z-index:20;display:none;font-size:12px;box-shadow:var(--shadow)}.modal{display:none;position:fixed;inset:0;background:#020615cc;backdrop-filter:blur(8px);z-index:30;place-items:center;padding:18px}.modal.open{display:grid}.modalbox{width:min(440px,100%);padding:23px;border:1px solid #4267a3;border-radius:20px;background:#0c1730;box-shadow:var(--shadow)}.modalbox h3{margin:0 0 8px}.modalbox p{color:#9eb1d3;font-size:13px;line-height:1.6}.modalbox input{width:100%;padding:11px;border-radius:10px;border:1px solid #344d79;background:#081226;color:#fff;margin:8px 0}.modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:12px}.hidden{display:none!important}
-@media(max-width:850px){.app{grid-template-columns:1fr}.sidebar{position:fixed;z-index:15;left:-290px;top:0;width:270px;transition:.25s;box-shadow:var(--shadow)}.sidebar.open{left:0}.menu{display:block}.topbar{padding:0 15px}.content{padding:25px 15px}.modules{grid-template-columns:repeat(2,1fr);gap:10px}.module{min-height:100px}.brand h1{font-size:13px}.topbar .title{font-size:13px}.welcome{margin-top:12px}.bubble{max-width:88%}}
-@media(min-width:851px) and (max-width:1100px){.modules{grid-template-columns:repeat(4,1fr)}}
-</style></head>
-<body><div class="app">
-<aside class="sidebar" id="sidebar"><div class="brand"><svg class="logo" viewBox="0 0 100 100" fill="none" aria-label="brain logo"><defs><linearGradient id="g" x1="8" y1="5" x2="90" y2="95"><stop stop-color="#16d5ff"/><stop offset=".55" stop-color="#477cff"/><stop offset="1" stop-color="#bd48ff"/></linearGradient></defs><path d="M48 17C37 5 20 13 21 27 7 30 8 49 18 54 9 69 21 83 35 78 40 91 53 87 50 75V24C50 21 49 19 48 17Z" stroke="url(#g)" stroke-width="5" stroke-linecap="round"/><path d="M52 17C63 5 80 13 79 27 93 30 92 49 82 54 91 69 79 83 65 78 60 91 47 87 50 75V24C50 21 51 19 52 17Z" stroke="url(#g)" stroke-width="5" stroke-linecap="round"/><path d="M50 13V87M26 34l13 5m-18 17 15-3m-5 23 12-10m31-32-13 5m18 17-15-3m5 23-12-10" stroke="url(#g)" stroke-width="3.5" stroke-linecap="round"/><path d="m42 10 8-7 8 7-4 7H46z" fill="#ffd45b" stroke="#fff0a4" stroke-width="1.5"/></svg><div><h1>MY SECOND BRAIN <span class="gradient">AI PRO</span></h1><small>Think Smarter • Live Better</small></div></div>
-<button class="newchat" id="newChat">＋ &nbsp; New Chat / សន្ទនាថ្មី</button><div class="navlabel">Workspace</div><nav class="nav" id="nav"><button class="active" data-mode="chat"><span class="ico">💬</span> AI Chat</button><button data-mode="image"><span class="ico">🖼️</span> Image AI</button><button data-mode="voice"><span class="ico">🎙️</span> Voice AI</button><button data-mode="coding"><span class="ico">⌨️</span> Coding</button><button data-mode="english"><span class="ico">🎓</span> English Tutor</button><button data-mode="xauusd"><span class="ico">🪙</span> XAUUSD</button><button data-mode="finance"><span class="ico">📈</span> Finance</button><button data-mode="security"><span class="ico">🛡️</span> Cybersecurity</button><button data-mode="business"><span class="ico">💼</span> Business</button><button data-mode="memory"><span class="ico">🧠</span> Memory</button></nav>
-<div class="navlabel">Recent chats</div><div class="history" id="history"><div class="emptyhint">No conversations yet</div></div><div class="secure"><strong>✓ &nbsp; Private & Secure</strong>Your personal workspace. Demo data stays in this browser.</div></aside>
-<main class="main"><header class="topbar"><div class="top-left"><button class="menu" id="menuBtn">☰</button><strong class="title">MY SECOND BRAIN <span class="gradient">AI PRO</span></strong><span class="status" title="Online demo"></span></div><div class="top-actions"><select class="pill" id="language" aria-label="Language"><option value="km">🌐 ខ្មែរ</option><option value="en">🌐 English</option><option value="zh">中文</option><option value="th">ไทย</option><option value="ja">日本語</option><option value="ko">한국어</option><option value="fr">Français</option></select><button class="pill pro" id="proBtn">♛ PRO</button><button class="pill" id="signIn">Sign In</button><div class="avatar">👤</div></div></header>
-<div class="content"><section id="home"><div class="welcome"><h2>Your Personal <span class="gradient">AI Assistant</span></h2><p>Chat • Create • Learn • Analyze • Grow</p><div class="tagline">SMARTER MIND &nbsp; • &nbsp; GREATER POSSIBILITIES</div></div><div class="composer"><div class="input-shell"><span style="font-size:20px;color:#9b7cff">✦</span><textarea id="homeInput" rows="1" placeholder="សួរអ្វីក៏បាន... Ask anything..."></textarea><button class="circlebtn" id="homeSend">➜</button></div></div><div class="quicktools"><button data-prompt="Help me plan my day">✦ Plan my day</button><button data-prompt="Teach me 5 useful English words today">🎓 Learn English</button><button data-prompt="Explain XAUUSD risk management for a beginner">🪙 XAUUSD</button><button data-prompt="Help me organize my ideas">🧠 Organize ideas</button></div><div class="sectionhead"><span>EXPLORE YOUR AI TOOLS</span><span>10 MODULES</span></div><div class="modules" id="modules"><button class="module" data-mode="chat"><span class="emoji">💬</span><span>AI Chat</span></button><button class="module" data-mode="image"><span class="emoji">🖼️</span><span>Image AI</span></button><button class="module" data-mode="voice"><span class="emoji">🎙️</span><span>Voice AI</span></button><button class="module" data-mode="coding"><span class="emoji">⌨️</span><span>Coding</span></button><button class="module" data-mode="english"><span class="emoji">🎓</span><span>English Tutor</span></button><button class="module" data-mode="xauusd"><span class="emoji">🪙</span><span>XAUUSD</span></button><button class="module" data-mode="finance"><span class="emoji">📈</span><span>Finance</span></button><button class="module" data-mode="security"><span class="emoji">🛡️</span><span>Cybersecurity</span></button><button class="module" data-mode="business"><span class="emoji">💼</span><span>Business</span></button><button class="module" data-mode="memory"><span class="emoji">🧠</span><span>Memory</span></button></div></section>
-<section class="chatview" id="chatView"><div class="welcome" style="margin:5px auto 18px"><h2 id="modeTitle">AI Chat</h2><p id="modeDesc">Your personal AI assistant</p></div><div class="chatlog" id="chatLog"><div class="emptyhint">សួស្តី! តើខ្ញុំអាចជួយអ្វីបានខ្លះ? 👋</div></div><div class="chatcomposer"><div class="input-shell"><button class="secondary" id="attachBtn" title="Attach file">＋</button><input type="file" id="fileInput" class="hidden" multiple><textarea id="chatInput" rows="1" placeholder="សរសេរសាររបស់អ្នក..."></textarea><button class="secondary" id="micBtn" title="Voice input">🎙️</button><button class="circlebtn" id="chatSend">➤</button></div></div></section>
-<section class="panel hidden" id="memoryPanel"><h3>🧠 My Memory Vault</h3><p>Save notes and personal knowledge in this browser. Your saved items remain on this device until you clear browser data.</p><input id="memoryInput" placeholder="Write a note or idea to remember..."><button class="primary" id="saveMemory">Save Memory</button><div id="memoryList" style="margin-top:16px"></div></section>
-</div><footer class="footer">✦ Powered by AI &nbsp; • &nbsp; Secure & Private &nbsp; • &nbsp; MY SECOND BRAIN AI PRO</footer></main></div>
-<div class="modal" id="modal"><div class="modalbox"><h3 id="modalTitle">Connect your account</h3><p id="modalText">Sign-in and cloud sync become available after connecting Supabase in the setup guide. This static preview does not collect passwords.</p><div class="modal-actions"><button class="secondary" id="closeModal">Close</button><button class="primary" id="setupInfo">Setup guide</button></div></div></div><div class="toast" id="toast"></div>
-<script>
-const $=id=>document.getElementById(id);let mode='chat',activeId=null,conversations=JSON.parse(localStorage.getItem('sbpro_chats')||'[]'),memories=JSON.parse(localStorage.getItem('sbpro_memory')||'[]');const labels={chat:['AI Chat','Ask questions, brainstorm, and explore ideas.'],image:['Image AI','Describe the image you want to create. Image generation requires a connected image model.'],voice:['Voice AI','Use your microphone for speech input. Spoken AI replies require a connected voice service.'],coding:['Coding Assistant','Ask for help with HTML, CSS, JavaScript, Python, Pine Script, and more.'],english:['English Tutor','Practice English conversation with simple explanations.'],xauusd:['XAUUSD Assistant','Learn chart analysis and risk management. No live prices are connected in this demo.'],finance:['Finance Assistant','Plan budgets and understand financial concepts. This is educational, not financial advice.'],security:['Cybersecurity','Learn defensive security and protect your own systems.'],business:['Business Assistant','Plan projects, marketing, operations, and business ideas.'],memory:['Memory Vault','Save and organize personal notes in this browser.']};
-function toast(s){$('toast').textContent=s;$('toast').style.display='block';setTimeout(()=>$('toast').style.display='none',2600)}function save(){localStorage.setItem('sbpro_chats',JSON.stringify(conversations));localStorage.setItem('sbpro_memory',JSON.stringify(memories));renderHistory()}function current(){return conversations.find(c=>c.id===activeId)}function renderHistory(){$('history').innerHTML=conversations.slice().reverse().slice(0,12).map(c=>`<button data-id="${c.id}">◦ ${esc(c.title)}</button>`).join('')||'<div class="emptyhint">No conversations yet</div>';document.querySelectorAll('#history button').forEach(b=>b.onclick=()=>loadChat(b.dataset.id))}function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}function showMode(m){mode=m;activeId=null;$('chatLog').innerHTML='<div class="emptyhint">សួស្តី! តើខ្ញុំអាចជួយអ្វីបានខ្លះ? 👋</div>';document.querySelectorAll('[data-mode]').forEach(b=>b.classList.toggle('active',b.dataset.mode===m));$('home').classList.add('hidden');$('chatView').classList.toggle('show',m!=='memory');$('memoryPanel').classList.toggle('hidden',m!=='memory');$('modeTitle').textContent=labels[m][0];$('modeDesc').textContent=labels[m][1];if(m==='memory'){renderMemories()}else if(!activeId||!current()){newChat(false)}$('sidebar').classList.remove('open')}
-function newChat(show=true){activeId=null;$('chatLog').innerHTML='<div class="emptyhint">សួស្តី! តើខ្ញុំអាចជួយអ្វីបានខ្លះ? 👋</div>';if(show){$('home').classList.remove('hidden');$('chatView').classList.remove('show');$('memoryPanel').classList.add('hidden');mode='chat';document.querySelectorAll('[data-mode]').forEach(b=>b.classList.toggle('active',b.dataset.mode==='chat'))}renderHistory()}
-function loadChat(id){const c=conversations.find(x=>x.id===id);if(!c)return;activeId=id;mode=c.mode||'chat';$('home').classList.add('hidden');$('memoryPanel').classList.add('hidden');$('chatView').classList.add('show');$('modeTitle').textContent=labels[mode][0];$('modeDesc').textContent=labels[mode][1];document.querySelectorAll('[data-mode]').forEach(b=>b.classList.toggle('active',b.dataset.mode===mode));renderMessages();$('sidebar').classList.remove('open')}
-function renderMessages(){const c=current();$('chatLog').innerHTML=c&&c.messages.length?c.messages.map(m=>`<div class="msg ${m.role==='user'?'user':''}"><div class="botmark">${m.role==='user'?'👤':'🧠'}</div><div class="bubble">${esc(m.text)}${m.role==='assistant'&&m.demo?'<div class="hint">Demo response • Connect an AI backend for live answers</div>':''}</div></div>`).join(''):'<div class="emptyhint">សួស្តី! តើខ្ញុំអាចជួយអ្វីបានខ្លះ? 👋</div>';$('chatLog').scrollTop=$('chatLog').scrollHeight}
-function demoReply(text,m){const t=text.toLowerCase();if(m==='english'||t.includes('english'))return 'Let’s practice English!\n\nTry this sentence: “I usually go home and rest.”\nខ្មែរ៖ ជាធម្មតា ខ្ញុំត្រឡប់ទៅផ្ទះ ហើយសម្រាក។\n\nNow you try: What do you usually do after work?';if(m==='xauusd'||t.includes('xauusd')||t.includes('gold'))return 'សម្រាប់ XAUUSD៖\n1. ពិនិត្យ Trend នៅ timeframe ខ្ពស់ជាមុន។\n2. កំណត់ Stop Loss មុនចូល Trade។\n3. គណនា lot តាមហានិភ័យដែលអ្នកអាចទទួលយកបាន។\n4. កុំចូល Trade ដោយសារសញ្ញាតែមួយ។\n\nនេះជាចម្លើយសាកល្បង មិនមែនជាសញ្ញាទិញ/លក់ផ្ទាល់ ឬតម្លៃទីផ្សារផ្ទាល់ទេ។';if(m==='coding')return 'ខ្ញុំអាចជួយរៀបចំ និងពន្យល់កូដបាន។ សូមបញ្ជាក់៖ ភាសាកូដ, គោលបំណង, និង error ដែលអ្នកឃើញ។\n\nចំណាំ៖ ការឆ្លើយតបនេះជារបៀប Demo។ ភ្ជាប់ AI API តាម Cloudflare Worker ដើម្បីទទួលចម្លើយពិត។';if(m==='security')return 'ខ្ញុំអាចជួយផ្នែកការពារប្រព័ន្ធ៖ ពិនិត្យសុវត្ថិភាពគណនី, កំណត់ MFA, ធ្វើបច្ចុប្បន្នភាពកម្មវិធី និងស្វែងរកចំណុចខ្សោយលើប្រព័ន្ធដែលអ្នកមានសិទ្ធិ។';return 'អរគុណសម្រាប់សំណួរ! នេះជា Preview របស់ MY SECOND BRAIN AI PRO។\n\nដើម្បីឱ្យ AI ឆ្លើយតបពិតប្រាកដ សូមភ្ជាប់ Cloudflare Worker និង AI API តាមឯកសារ README_KM.txt។ កុំដាក់ API key នៅក្នុង index.html។\n\nសម្រាប់ពេលនេះ អ្នកអាចសាកល្បង Chat, ប្តូរភាសា, បង្កើតសន្ទនាថ្មី និងរក្សាទុក Memory នៅលើឧបករណ៍នេះ។'}
-async function send(text){text=(text||'').trim();if(!text)return;if(mode==='memory'){memories.unshift({id:Date.now(),text});save();renderMemories();return}if(!activeId){activeId=String(Date.now());conversations.push({id:activeId,title:text.slice(0,38),mode,messages:[]})}const c=current();c.messages.push({role:'user',text});renderMessages();$('chatInput').value='';$('homeInput').value='';save();let answer;try{const cfg=window.SBPRO_CONFIG||{};if(cfg.workerUrl){const res=await fetch(cfg.workerUrl+'/api/chat',{method:'POST',headers:{'Content-Type':'application/json',...(localStorage.getItem('sbpro_token')?{Authorization:'Bearer '+localStorage.getItem('sbpro_token')}:{})},body:JSON.stringify({message:text,mode,history:c.messages.slice(-12)})});if(!res.ok)throw new Error('API '+res.status);const data=await res.json();answer=data.reply||data.message||'No response'}else answer=demoReply(text,mode)}catch(e){answer='មិនអាចភ្ជាប់ AI Server បានទេ។ សូមពិនិត្យ Worker URL និងការកំណត់ API។\n'+e.message}c.messages.push({role:'assistant',text:answer,demo:!(window.SBPRO_CONFIG&&window.SBPRO_CONFIG.workerUrl)});save();renderMessages()}
-function renderMemories(){$('memoryList').innerHTML=memories.map(x=>`<div class="panel" style="padding:12px;margin:8px 0;display:flex;justify-content:space-between;gap:10px"><span>${esc(x.text)}</span><button class="secondary" data-del="${x.id}">Delete</button></div>`).join('')||'<div class="emptyhint">No saved memories yet.</div>';document.querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>{memories=memories.filter(x=>x.id!=b.dataset.del);save();renderMemories()})}
-document.querySelectorAll('[data-mode]').forEach(b=>b.addEventListener('click',()=>showMode(b.dataset.mode)));$('newChat').onclick=()=>newChat(true);$('homeSend').onclick=()=>{showMode('chat');send($('homeInput').value)};$('homeInput').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();$('homeSend').click()}});$('chatSend').onclick=()=>send($('chatInput').value);$('chatInput').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();$('chatSend').click()}});document.querySelectorAll('[data-prompt]').forEach(b=>b.onclick=()=>{showMode('chat');send(b.dataset.prompt)});$('menuBtn').onclick=()=>$('sidebar').classList.toggle('open');$('saveMemory').onclick=()=>{const v=$('memoryInput').value.trim();if(!v)return;memories.unshift({id:Date.now(),text:v});$('memoryInput').value='';save();renderMemories();toast('Memory saved on this device')};$('attachBtn').onclick=()=>$('fileInput').click();$('fileInput').onchange=e=>{const f=[...e.target.files].map(x=>x.name).join(', ');if(f)toast('Selected: '+f+' — file analysis requires AI backend')};$('micBtn').onclick=()=>{const SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR){toast('Speech input is not supported in this browser');return}const rec=new SR();rec.lang=$('language').value==='km'?'km-KH':'en-US';rec.onresult=e=>$('chatInput').value=e.results[0][0].transcript;rec.start()};$('proBtn').onclick=()=>openModal('PRO Membership','FREE/PREMIUM plans, payments, and feature limits must be configured with a secure backend before launch.');$('signIn').onclick=()=>openModal('Sign In / ចូលគណនី','Google, Facebook, Apple sign-in and individual accounts require Supabase Auth configuration. This preview does not collect passwords.');function openModal(t,p){$('modalTitle').textContent=t;$('modalText').textContent=p;$('modal').classList.add('open')}$('closeModal').onclick=()=>$('modal').classList.remove('open');$('setupInfo').onclick=()=>{window.open('./README_KM.txt','_blank');$('modal').classList.remove('open')};$('language').onchange=e=>{document.documentElement.lang=e.target.value;toast('Language selected: '+e.target.options[e.target.selectedIndex].text+' — full translation pack can be added')};renderHistory();if('serviceWorker'in navigator&&location.protocol.startsWith('http'))window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js').catch(()=>{}));
-</script><script src="./config.js"></script></body></html>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Second Brain | Finance Auth</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
+  </head>
+  <body>
+    <div class="app-shell">
+      <div class="auth-card">
+        <div class="brand-block">
+          <div class="brand-icon">💰</div>
+          <h1>My Second Brain</h1>
+          <p>Private personal finance workspace</p>
+        </div>
+
+        <div id="authStatus" class="message message-info">
+          Configure your Supabase URL and anon key in <strong>config.js</strong> to start.
+        </div>
+
+        <div class="toggle-row">
+          <button class="toggle-btn active" data-mode="login">Log in</button>
+          <button class="toggle-btn" data-mode="signup">Sign up</button>
+        </div>
+
+        <form id="authForm" class="auth-form">
+          <label>
+            <span>Email</span>
+            <input id="email" type="email" placeholder="you@example.com" required />
+          </label>
+
+          <label>
+            <span>Password</span>
+            <input id="password" type="password" placeholder="••••••••" required />
+          </label>
+
+          <label id="nameField" class="hidden">
+            <span>Full name</span>
+            <input id="fullName" type="text" placeholder="John Doe" />
+          </label>
+
+          <button id="submitAuthBtn" type="submit" class="primary-btn">Log in</button>
+        </form>
+
+        <div id="loggedInState" class="logged-in hidden">
+          <div class="user-summary">
+            <div>
+              <p class="small-text">Signed in as</p>
+              <strong id="userEmail">-</strong>
+            </div>
+            <button id="logoutBtn" class="secondary-btn">Log out</button>
+          </div>
+
+          <form id="transactionForm" class="transaction-form">
+            <h2>Add transaction</h2>
+
+            <div class="input-row two-col">
+              <label>
+                <span>Type</span>
+                <select id="txType">
+                  <option value="expense">Expense</option>
+                  <option value="income">Income</option>
+                </select>
+              </label>
+
+              <label>
+                <span>Date</span>
+                <input id="txDate" type="date" required />
+              </label>
+            </div>
+
+            <div class="input-row two-col">
+              <label>
+                <span>Amount</span>
+                <input id="txAmount" type="number" step="0.01" min="0.01" required placeholder="0.00" />
+              </label>
+
+              <label>
+                <span>Currency</span>
+                <select id="txCurrency">
+                  <option value="USD">USD</option>
+                  <option value="KHR">KHR</option>
+                </select>
+              </label>
+            </div>
+
+            <label>
+              <span>Category</span>
+              <input id="txCategory" type="text" placeholder="Food, Salary, Transport..." required />
+            </label>
+
+            <label>
+              <span>Description</span>
+              <input id="txDescription" type="text" placeholder="Optional note" />
+            </label>
+
+            <button type="submit" class="primary-btn">Save transaction</button>
+          </form>
+
+          <div class="transactions-box">
+            <div class="section-header">
+              <h2>My transactions</h2>
+            </div>
+            <div id="transactionsList" class="transactions-list"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="app.js"></script>
+  </body>
+</html>

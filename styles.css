@@ -1,0 +1,224 @@
+const { createClient } = supabase;
+
+const supabase = createClient(
+  window.SUPABASE_CONFIG.url,
+  window.SUPABASE_CONFIG.anonKey
+);
+
+const state = {
+  mode: 'login',
+  user: null,
+  transactions: []
+};
+
+const elements = {
+  authForm: document.getElementById('authForm'),
+  authStatus: document.getElementById('authStatus'),
+  email: document.getElementById('email'),
+  password: document.getElementById('password'),
+  fullName: document.getElementById('fullName'),
+  nameField: document.getElementById('nameField'),
+  submitAuthBtn: document.getElementById('submitAuthBtn'),
+  loggedInState: document.getElementById('loggedInState'),
+  userEmail: document.getElementById('userEmail'),
+  logoutBtn: document.getElementById('logoutBtn'),
+  toggleButtons: [...document.querySelectorAll('.toggle-btn')],
+  txForm: document.getElementById('transactionForm'),
+  txType: document.getElementById('txType'),
+  txDate: document.getElementById('txDate'),
+  txAmount: document.getElementById('txAmount'),
+  txCurrency: document.getElementById('txCurrency'),
+  txCategory: document.getElementById('txCategory'),
+  txDescription: document.getElementById('txDescription'),
+  transactionsList: document.getElementById('transactionsList')
+};
+
+function setStatus(message, type = 'info') {
+  elements.authStatus.className = `message message-${type}`;
+  elements.authStatus.innerHTML = message;
+}
+
+function setMode(mode) {
+  state.mode = mode;
+  elements.toggleButtons.forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.mode === mode);
+  });
+
+  const isSignup = mode === 'signup';
+  elements.nameField.classList.toggle('hidden', !isSignup);
+  elements.submitAuthBtn.textContent = isSignup ? 'Create account' : 'Log in';
+}
+
+async function handleAuth(e) {
+  e.preventDefault();
+  const email = elements.email.value.trim();
+  const password = elements.password.value;
+  const fullName = elements.fullName.value.trim();
+
+  if (!email || !password) {
+    setStatus('Please enter both email and password.', 'error');
+    return;
+  }
+
+  try {
+    if (state.mode === 'signup') {
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            full_name: fullName
+          }
+        }
+      });
+
+      if (error) throw error;
+      setStatus('Account created. Check your email to confirm, then log in.', 'success');
+      setMode('login');
+    } else {
+      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+      if (error) throw error;
+      state.user = data.user;
+      await loadUserData();
+    }
+  } catch (error) {
+    setStatus(error.message || 'Authentication failed.', 'error');
+  }
+}
+
+async function loadUserData() {
+  const { data: userData, error: userError } = await supabase.auth.getUser();
+  if (userError || !userData?.user) {
+    setStatus('Session expired. Please sign in again.', 'error');
+    return;
+  }
+
+  state.user = userData.user;
+  elements.loggedInState.classList.remove('hidden');
+  elements.userEmail.textContent = state.user.email;
+  setStatus('Signed in successfully.', 'success');
+
+  const { data: txs, error } = await supabase
+    .from('transactions')
+    .select('*')
+    .order('date', { ascending: false });
+
+  if (error) {
+    setStatus('Signed in, but unable to load transactions: ' + error.message, 'error');
+    return;
+  }
+
+  state.transactions = txs || [];
+  renderTransactions();
+}
+
+function renderTransactions() {
+  const rows = state.transactions;
+
+  if (!rows.length) {
+    elements.transactionsList.innerHTML = '<div class="transaction-item"><div class="meta">No transactions saved yet.</div></div>';
+    return;
+  }
+
+  elements.transactionsList.innerHTML = rows.map(tx => {
+    const badgeClass = tx.type === 'income' ? 'badge-income' : 'badge-expense';
+    const badgeText = tx.type === 'income' ? 'Income' : 'Expense';
+    const amountLabel = tx.type === 'income' ? '+' : '-';
+    return `
+      <div class="transaction-item">
+        <div class="top-line">
+          <strong>${tx.description || tx.category}</strong>
+          <span class="badge ${badgeClass}">${badgeText}</span>
+        </div>
+        <div class="meta">${tx.date} • ${tx.category || 'General'} • ${tx.payment_method || 'Cash'}</div>
+        <div style="margin-top:8px; font-weight:700; color:${tx.type === 'income' ? '#bbf7d0' : '#fecaca'};">
+          ${amountLabel}${tx.currency} ${Number(tx.amount).toFixed(2)}
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+async function addTransaction(e) {
+  e.preventDefault();
+
+  if (!state.user) {
+    setStatus('Please sign in before adding transactions.', 'error');
+    return;
+  }
+
+  const payload = {
+    user_id: state.user.id,
+    type: elements.txType.value,
+    date: elements.txDate.value,
+    amount: Number(elements.txAmount.value),
+    currency: elements.txCurrency.value,
+    category: elements.txCategory.value.trim(),
+    description: elements.txDescription.value.trim(),
+    payment_method: elements.txType.value === 'expense' ? 'Cash' : 'Cash',
+    party_name: '',
+    party_phone: ''
+  };
+
+  if (!payload.date || !payload.category || Number.isNaN(payload.amount) || payload.amount <= 0) {
+    setStatus('Please complete the form with a valid date, category, and positive amount.', 'error');
+    return;
+  }
+
+  const { data, error } = await supabase
+    .from('transactions')
+    .insert([payload])
+    .select();
+
+  if (error) {
+    setStatus('Unable to save transaction: ' + error.message, 'error');
+    return;
+  }
+
+  const saved = data?.[0];
+  state.transactions.unshift(saved);
+  renderTransactions();
+  elements.txForm.reset();
+  setStatus('Transaction saved successfully.', 'success');
+}
+
+async function logout() {
+  const { error } = await supabase.auth.signOut();
+  if (error) {
+    setStatus('Logout failed: ' + error.message, 'error');
+    return;
+  }
+
+  state.user = null;
+  state.transactions = [];
+  elements.loggedInState.classList.add('hidden');
+  elements.authForm.reset();
+  renderTransactions();
+  setStatus('You have been logged out.', 'info');
+}
+
+async function initSession() {
+  const { data: { session }, error } = await supabase.auth.getSession();
+  if (error) {
+    setStatus('Session error: ' + error.message, 'error');
+    return;
+  }
+
+  if (session?.user) {
+    state.user = session.user;
+    await loadUserData();
+  }
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+  setMode('login');
+  elements.toggleButtons.forEach(btn => {
+    btn.addEventListener('click', () => setMode(btn.dataset.mode));
+  });
+
+  elements.authForm.addEventListener('submit', handleAuth);
+  elements.txForm.addEventListener('submit', addTransaction);
+  elements.logoutBtn.addEventListener('click', logout);
+
+  initSession();
+});
